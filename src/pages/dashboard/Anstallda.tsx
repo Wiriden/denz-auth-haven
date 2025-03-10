@@ -1,9 +1,10 @@
 
 import React from "react";
-import { Card } from "@/components/ui/card";
-import { Users, Search, Filter, Plus } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, Search, Filter, Plus, ChevronLeft, ChevronRight, Award } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type Employee = {
   name: string;
@@ -24,13 +25,13 @@ const employeeData: Employee[] = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case "active":
-      return "bg-green-100 text-green-800";
+      return "bg-emerald-100 text-emerald-700 border-emerald-200";
     case "inactive":
-      return "bg-gray-100 text-gray-800";
+      return "bg-slate-100 text-slate-700 border-slate-200";
     case "onLeave":
-      return "bg-amber-100 text-amber-800";
+      return "bg-amber-100 text-amber-700 border-amber-200";
     default:
-      return "bg-gray-100 text-gray-800";
+      return "bg-slate-100 text-slate-700 border-slate-200";
   }
 };
 
@@ -49,59 +50,70 @@ const getStatusText = (status: string) => {
 
 const Anstallda = () => {
   return (
-    <div className="animate-fadeIn">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <Users size={24} className="text-blue-500 mr-2" />
-          <h1 className="text-2xl font-bold text-gray-800">Anställda</h1>
+    <div className="animate-fadeIn space-y-8">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Anställda</h1>
+          <p className="text-slate-500 mt-1">Hantera personal och certifikat</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus size={16} className="mr-1" />
+        <Button className="bg-blue-600 hover:bg-blue-700 gap-1.5">
+          <Plus size={16} />
           Lägg till anställd
         </Button>
       </div>
       
       <div className="flex gap-4 mb-6">
         <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <Input className="pl-10" placeholder="Sök efter anställd" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+          <Input className="pl-10 border-slate-200" placeholder="Sök efter anställd" />
         </div>
-        <Button variant="outline" className="flex gap-2">
+        <Button variant="outline" className="flex gap-2 border-slate-200">
           <Filter size={18} />
           Filter
         </Button>
       </div>
       
-      <Card className="shadow-sm overflow-hidden">
+      <Card className="shadow-sm overflow-hidden border-slate-200">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 text-left">
-                <th className="px-6 py-3 text-gray-600 font-medium">Namn</th>
-                <th className="px-6 py-3 text-gray-600 font-medium">Roll</th>
-                <th className="px-6 py-3 text-gray-600 font-medium">Avdelning</th>
-                <th className="px-6 py-3 text-gray-600 font-medium">Certifikat</th>
-                <th className="px-6 py-3 text-gray-600 font-medium">Status</th>
-                <th className="px-6 py-3 text-gray-600 font-medium">Åtgärder</th>
+              <tr className="bg-slate-50 text-left border-b border-slate-200">
+                <th className="px-6 py-3 text-slate-600 font-medium">Namn</th>
+                <th className="px-6 py-3 text-slate-600 font-medium">Roll</th>
+                <th className="px-6 py-3 text-slate-600 font-medium">Avdelning</th>
+                <th className="px-6 py-3 text-slate-600 font-medium text-center">Certifikat</th>
+                <th className="px-6 py-3 text-slate-600 font-medium">Status</th>
+                <th className="px-6 py-3 text-slate-600 font-medium">Åtgärder</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-slate-200">
               {employeeData.map((employee, index) => (
-                <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-800">{employee.name}</td>
-                  <td className="px-6 py-4 text-gray-600">{employee.role}</td>
-                  <td className="px-6 py-4 text-gray-600">{employee.department}</td>
-                  <td className="px-6 py-4 text-center">{employee.certificates}</td>
+                <tr key={index} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-slate-800">{employee.name}</td>
+                  <td className="px-6 py-4 text-slate-600">{employee.role}</td>
+                  <td className="px-6 py-4 text-slate-600">{employee.department}</td>
+                  <td className="px-6 py-4 text-center">
+                    {employee.certificates > 0 ? (
+                      <div className="flex items-center justify-center gap-1">
+                        <Award size={14} className="text-blue-500" />
+                        <span className="font-medium">{employee.certificates}</span>
+                      </div>
+                    ) : (
+                      <span>-</span>
+                    )}
+                  </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(employee.status)}`}>
+                    <Badge 
+                      variant="outline" 
+                      className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(employee.status)}`}
+                    >
                       {getStatusText(employee.status)}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">Visa</button>
-                      <span className="text-gray-300">|</span>
-                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">Redigera</button>
+                      <Button variant="ghost" size="sm" className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">Visa</Button>
+                      <Button variant="ghost" size="sm" className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">Redigera</Button>
                     </div>
                   </td>
                 </tr>
@@ -111,11 +123,27 @@ const Anstallda = () => {
         </div>
       </Card>
       
-      <div className="mt-6 flex justify-between items-center text-sm text-gray-600">
+      <div className="flex justify-between items-center text-sm text-slate-600">
         <div>Visar 1-5 av 5 anställda</div>
         <div className="flex space-x-2">
-          <button className="px-3 py-1 bg-white border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Föregående</button>
-          <button className="px-3 py-1 bg-white border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>Nästa</button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-slate-200 text-slate-600"
+            disabled
+          >
+            <ChevronLeft size={16} className="mr-1" />
+            Föregående
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-slate-200 text-slate-600"
+            disabled
+          >
+            Nästa
+            <ChevronRight size={16} className="ml-1" />
+          </Button>
         </div>
       </div>
     </div>

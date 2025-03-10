@@ -36,10 +36,9 @@ const Dashboard = () => {
         </div>
         
         <div className="glass-card p-8 rounded-xl">
-          <h1 className="text-3xl font-bold mb-6 text-center">Välkommen till Denz Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-6 text-center">Välkommen till Denz Assetmaster</h1>
           <p className="text-gray-400 text-center mb-8">
-            Detta är en demosida för inloggade användare. I en verklig implementation skulle här finnas 
-            användargränssnitt för applikationen.
+            Detta är en demosida för inloggade användare. Använd navigeringen för att utforska systemet.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

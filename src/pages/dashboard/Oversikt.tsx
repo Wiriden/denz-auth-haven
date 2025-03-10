@@ -1,9 +1,14 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell, Users, Car, Package, AlertTriangle, Clock, CheckCircle } from "lucide-react";
+import { 
+  Users, Car, Package, AlertTriangle, Clock, Calendar,
+  ChevronRight, Award, Bell, Filter, Search, BarChart4
+} from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 type ActivityItem = {
   title: string;
@@ -67,156 +72,239 @@ const vehicles: Vehicle[] = [
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case "high":
-      return "bg-red-100 text-red-800 border-red-200";
+      return "bg-red-100 text-red-700 border-red-200";
     case "medium":
-      return "bg-amber-100 text-amber-800 border-amber-200";
+      return "bg-amber-100 text-amber-700 border-amber-200";
     case "low":
-      return "bg-green-100 text-green-800 border-green-200";
+      return "bg-emerald-100 text-emerald-700 border-emerald-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return "bg-slate-100 text-slate-700 border-slate-200";
   }
 };
 
 const getDaysLeftColor = (days: number) => {
   if (days <= 14) return "text-red-600";
   if (days <= 30) return "text-amber-600";
-  return "text-green-600";
+  return "text-emerald-600";
+};
+
+const getTimeLeftIndicator = (hours: number) => {
+  const color = hours <= 24 ? "text-red-600" : "text-emerald-600";
+  return (
+    <div className="flex items-center gap-1.5">
+      <Clock size={14} className={color} />
+      <span className={`font-medium ${color}`}>{hours}h</span>
+    </div>
+  );
 };
 
 const Oversikt = () => {
   return (
-    <div className="animate-fadeIn">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Assetmaster Översikt</h1>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="relative p-2 rounded-full bg-white shadow hover:bg-gray-50 transition-colors">
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">3</span>
-              <Bell size={20} className="text-gray-600" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>3 nya notifikationer</p>
-          </TooltipContent>
-        </Tooltip>
+    <div className="animate-fadeIn space-y-8">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Assetmaster Översikt</h1>
+          <p className="text-slate-500 mt-1">En överblick över system, tillgångar och certifikat</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="gap-2">
+            <BarChart4 size={16} />
+            Rapporter
+          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">3</span>
+                <Bell size={18} className="text-slate-600" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>3 nya notifikationer</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="p-0 pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-medium text-gray-800">Anställda</CardTitle>
-            <Users size={20} className="text-blue-500" />
-          </CardHeader>
-          <CardContent className="p-0 space-y-4">
-            <div className="text-gray-600">
-              <span className="font-medium">5</span> aktiva certifikat
-              <div className="mt-2 space-y-2">
-                <div className="text-sm bg-gray-50 p-2 rounded-md">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Certifikat</span>
-                    <span>Utgår</span>
-                  </div>
-                  {certificates.slice(0, 2).map((cert, index) => (
-                    <div key={index} className="flex justify-between mt-2">
-                      <span>{cert.name} - {cert.employee}</span>
-                      <span className={getDaysLeftColor(cert.daysLeft)}>{cert.daysLeft} dagar</span>
-                    </div>
-                  ))}
-                  <button className="w-full mt-2 text-xs text-blue-600 hover:text-blue-800">Visa alla certifikat</button>
-                </div>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-blue-50 to-blue-100 border-b border-slate-200">
+            <div className="space-y-0.5">
+              <CardTitle className="text-slate-800">Anställda</CardTitle>
+              <p className="text-sm text-slate-500">Certifikatstatus</p>
             </div>
-            <button className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">Hantera anställda</button>
-          </CardContent>
-        </Card>
-        
-        <Card className="p-6 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="p-0 pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-medium text-gray-800">Fordon</CardTitle>
-            <Car size={20} className="text-green-500" />
+            <div className="bg-white p-2 rounded-full shadow-sm">
+              <Users size={20} className="text-blue-600" />
+            </div>
           </CardHeader>
-          <CardContent className="p-0 space-y-4">
-            <div className="text-gray-600">
-              <span className="font-medium">2</span> under service
-              <div className="mt-2 space-y-2">
-                <div className="text-sm bg-gray-50 p-2 rounded-md">
-                  {vehicles.map((vehicle, index) => (
-                    <div key={index} className="flex justify-between items-center mt-2 first:mt-0">
-                      <span>{vehicle.name} ({vehicle.regNumber})</span>
-                      <div className="flex items-center">
-                        <Clock size={14} className="mr-1 text-blue-500" />
-                        <span>{vehicle.hoursLeft}h</span>
+          <CardContent className="p-6 space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-slate-600 text-sm font-medium">Aktiva certifikat</span>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 hover:bg-blue-100">5</Badge>
+              </div>
+              <div className="space-y-3 mt-3">
+                {certificates.slice(0, 3).map((cert, index) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-slate-50 rounded-md border border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <Award size={16} className="text-blue-500" />
+                      <div>
+                        <div className="font-medium text-slate-700">{cert.name}</div>
+                        <div className="text-xs text-slate-500">{cert.employee}</div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={14} className={getDaysLeftColor(cert.daysLeft)} />
+                      <span className={`text-sm font-medium ${getDaysLeftColor(cert.daysLeft)}`}>
+                        {cert.daysLeft} dagar
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {certificates.length > 3 && (
+                  <Button variant="ghost" size="sm" className="w-full text-blue-600 hover:text-blue-700 justify-between">
+                    <span>Visa alla certifikat</span>
+                    <ChevronRight size={16} />
+                  </Button>
+                )}
               </div>
             </div>
-            <button className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">Schemalägg service</button>
+            <div className="pt-2 border-t border-slate-100">
+              <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+                Hantera anställda
+              </Button>
+            </div>
           </CardContent>
         </Card>
         
-        <Card className="p-6 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="p-0 pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-medium text-gray-800">Tillgångar</CardTitle>
-            <Package size={20} className="text-purple-500" />
+        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-emerald-100 border-b border-slate-200">
+            <div className="space-y-0.5">
+              <CardTitle className="text-slate-800">Fordon</CardTitle>
+              <p className="text-sm text-slate-500">Servicestatus</p>
+            </div>
+            <div className="bg-white p-2 rounded-full shadow-sm">
+              <Car size={20} className="text-emerald-600" />
+            </div>
           </CardHeader>
-          <CardContent className="p-0 space-y-4">
-            <div className="text-3xl font-semibold text-orange-500">23</div>
-            <div className="text-gray-600 flex items-center">
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: "78%" }}></div>
+          <CardContent className="p-6 space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-slate-600 text-sm font-medium">Under service</span>
+                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100">2</Badge>
               </div>
-              <span className="ml-2 text-amber-600 font-medium">18</span>
+              <div className="space-y-3 mt-3">
+                {vehicles.map((vehicle, index) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-slate-50 rounded-md border border-slate-100">
+                    <div>
+                      <div className="font-medium text-slate-700">{vehicle.name}</div>
+                      <div className="text-xs text-slate-500">{vehicle.regNumber}</div>
+                    </div>
+                    {getTimeLeftIndicator(vehicle.hoursLeft)}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Utcheckade</span>
-              <span className="text-gray-500">78%</span>
+            <div className="pt-2 border-t border-slate-100">
+              <Button variant="outline" className="w-full text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+                Schemalägg service
+              </Button>
             </div>
-            <div className="flex space-x-2">
-              <button className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">Hantera tillgångar</button>
-              <span className="text-gray-300">|</span>
-              <button className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">Checka ut</button>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-purple-50 to-purple-100 border-b border-slate-200">
+            <div className="space-y-0.5">
+              <CardTitle className="text-slate-800">Tillgångar</CardTitle>
+              <p className="text-sm text-slate-500">Användningsstatus</p>
+            </div>
+            <div className="bg-white p-2 rounded-full shadow-sm">
+              <Package size={20} className="text-purple-600" />
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-slate-600 text-sm font-medium">Total tillgångar</span>
+                <span className="text-2xl font-bold text-purple-600">23</span>
+              </div>
+              
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-600">Utcheckade</span>
+                  <span className="font-medium text-amber-600">18 (78%)</span>
+                </div>
+                <Progress 
+                  value={78} 
+                  className="h-2 bg-slate-100" 
+                  indicatorClassName="bg-gradient-to-r from-amber-400 to-amber-500" 
+                />
+                
+                <div className="flex justify-between text-sm mt-3">
+                  <span className="text-slate-600">Tillgängliga</span>
+                  <span className="font-medium text-emerald-600">5 (22%)</span>
+                </div>
+                <Progress 
+                  value={22} 
+                  className="h-2 bg-slate-100" 
+                  indicatorClassName="bg-gradient-to-r from-emerald-400 to-emerald-500" 
+                />
+              </div>
+            </div>
+            <div className="pt-2 border-t border-slate-100 flex gap-2">
+              <Button variant="outline" className="flex-1 text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700">
+                Hantera
+              </Button>
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                Checka ut
+              </Button>
             </div>
           </CardContent>
         </Card>
       </div>
       
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-medium text-gray-800">Senaste aktiviteter</h2>
-          <div className="flex space-x-2">
-            <button className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Filter</button>
-            <button className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">Sök</button>
+          <h2 className="text-xl font-semibold text-slate-800">Senaste aktiviteter</h2>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="gap-1">
+              <Filter size={14} />
+              Filter
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1">
+              <Search size={14} />
+              Sök
+            </Button>
           </div>
         </div>
-        <Card className="shadow-sm divide-y">
+        <Card className="shadow-sm divide-y divide-slate-100 border-slate-200">
           {activities.map((activity, index) => (
-            <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
+            <div key={index} className="p-4 hover:bg-slate-50 transition-colors">
               <div className="flex justify-between">
                 <div>
-                  <div className="flex items-center">
-                    <h3 className="font-medium text-gray-800">{activity.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-slate-800">{activity.title}</h3>
                     {activity.priority && (
-                      <Badge className={`ml-2 ${getPriorityColor(activity.priority)}`} variant="outline">
+                      <Badge variant="outline" className={`${getPriorityColor(activity.priority)}`}>
                         {activity.priority === "high" ? "Hög" : activity.priority === "medium" ? "Medium" : "Låg"}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-gray-600 mt-1">{activity.description}</p>
+                  <p className="text-slate-600 mt-1 text-sm">{activity.description}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-gray-500">{activity.date}{activity.timestamp && `, ${activity.timestamp}`}</p>
+                  <p className="text-xs text-slate-500 font-medium">{activity.date}{activity.timestamp && `, ${activity.timestamp}`}</p>
                   <div className="mt-2">
                     {activity.title.includes("Certifikat") && (
-                      <button className="text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 px-2 py-1 rounded transition-colors">
+                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 h-7 rounded-md text-xs px-2">
                         Förnya
-                      </button>
+                      </Button>
                     )}
                     {activity.title.includes("Fordon") && (
-                      <button className="text-xs bg-green-50 text-green-700 hover:bg-green-100 px-2 py-1 rounded transition-colors">
+                      <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 h-7 rounded-md text-xs px-2">
                         Detaljer
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -226,20 +314,24 @@ const Oversikt = () => {
         </Card>
       </div>
       
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
-        <div className="flex items-start">
-          <AlertTriangle size={20} className="text-amber-500 mt-1 mr-2 flex-shrink-0" />
-          <div>
-            <h3 className="font-medium text-gray-800">Kommande händelser</h3>
-            <p className="text-sm text-gray-600 mt-1">
-              2 certifikat närmar sig utgångsdatum och behöver förnyas inom de kommande 30 dagarna.
-            </p>
-            <button className="mt-2 text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
-              Visa detaljer
-            </button>
+      <Card className="shadow-sm border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="bg-white p-2 rounded-full shadow-sm flex-shrink-0">
+              <AlertTriangle size={20} className="text-amber-500" />
+            </div>
+            <div>
+              <h3 className="font-medium text-slate-800">Kommande händelser</h3>
+              <p className="text-sm text-slate-600 mt-1">
+                2 certifikat närmar sig utgångsdatum och behöver förnyas inom de kommande 30 dagarna.
+              </p>
+              <Button variant="outline" size="sm" className="mt-2 text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700">
+                Visa detaljer
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
