@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { 
   Package2, 
   Users, 
-  Wrench, 
+  Box, 
   Settings, 
   ChevronRight, 
   ChevronLeft,
@@ -50,14 +50,14 @@ const Sidebar = () => {
     >
       <div 
         className={cn(
-          "bg-[#0F172A] h-full transition-all duration-300 overflow-hidden flex flex-col",
-          isExpanded ? "w-60" : "w-16"
+          "bg-denz-darker h-full transition-all duration-300 overflow-hidden flex flex-col",
+          isExpanded ? "w-64" : "w-16"
         )}
       >
         {/* Toggle button */}
         <button 
           className={cn(
-            "absolute top-3 -right-4 z-10 bg-[#0F172A] p-1 rounded-full text-white",
+            "absolute top-3 -right-4 z-10 bg-denz-dark p-1 rounded-full text-denz-text-secondary border border-denz-gray-700/30",
             !isExpanded && "rotate-180"
           )}
           onClick={() => setExpanded(!expanded)}
@@ -65,15 +65,26 @@ const Sidebar = () => {
           {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
         </button>
         
+        {/* Sidebar header */}
+        <div className="h-16 flex items-center px-4 border-b border-denz-gray-700/30">
+          {isExpanded ? (
+            <span className="text-lg font-semibold text-denz-text-primary">Denz</span>
+          ) : (
+            <div className="w-8 h-8 rounded-md bg-denz-blue flex items-center justify-center text-white font-bold">
+              D
+            </div>
+          )}
+        </div>
+        
         {/* Sidebar content */}
         <div className="py-4 flex flex-col flex-1">
           {sidebarItems.map((item) => (
             <div key={item.title} className="mb-1">
               <div 
-                className="flex items-center px-4 py-3 text-white cursor-pointer hover:bg-[#1E293B]"
+                className="flex items-center px-4 py-3 text-denz-text-primary cursor-pointer hover:bg-denz-dark"
                 onClick={() => navigate(item.path)}
               >
-                <item.icon size={24} className="text-[#64748B]" />
+                <item.icon size={20} className="text-denz-text-secondary" />
                 {isExpanded && (
                   <span className="ml-4 font-medium">{item.title}</span>
                 )}
@@ -88,8 +99,8 @@ const Sidebar = () => {
                     className={cn(
                       "flex items-center pl-12 pr-4 py-2 cursor-pointer",
                       isActive 
-                        ? "bg-[#1E293B] text-white" 
-                        : "text-[#94A3B8] hover:bg-[#1E293B] hover:text-white"
+                        ? "bg-denz-blue/10 text-denz-blue" 
+                        : "text-denz-text-secondary hover:bg-denz-dark hover:text-denz-text-primary"
                     )}
                     onClick={() => navigate(subItem.path)}
                   >
