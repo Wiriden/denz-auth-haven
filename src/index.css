@@ -14,7 +14,7 @@
     --popover: 224 71% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 211 100% 50%;
+    --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -26,7 +26,7 @@
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
@@ -49,7 +49,7 @@
 
 @layer utilities {
   .glass-card {
-    @apply bg-denz-card-bg/75 backdrop-blur-sm border border-white/5 shadow-lg;
+    @apply bg-denz-card-bg/75 backdrop-blur-sm border border-white/10 shadow-card;
   }
   
   .btn-shine {
@@ -80,6 +80,42 @@
   
   .hover-scale:hover {
     @apply transform scale-105;
+  }
+
+  .status-success {
+    @apply text-denz-success border-denz-success/30 bg-denz-success/10;
+  }
+
+  .status-warning {
+    @apply text-denz-warning border-denz-warning/30 bg-denz-warning/10;
+  }
+
+  .status-danger {
+    @apply text-denz-danger border-denz-danger/30 bg-denz-danger/10;
+  }
+
+  .status-info {
+    @apply text-denz-info border-denz-info/30 bg-denz-info/10;
+  }
+
+  .card-gradient-blue {
+    @apply bg-gradient-to-br from-denz-card-bg to-denz-blue/5 border border-denz-blue/20;
+  }
+
+  .card-gradient-green {
+    @apply bg-gradient-to-br from-denz-card-bg to-denz-success/5 border border-denz-success/20;
+  }
+
+  .card-gradient-purple {
+    @apply bg-gradient-to-br from-denz-card-bg to-denz-purple/5 border border-denz-purple/20;
+  }
+
+  .card-gradient-amber {
+    @apply bg-gradient-to-br from-denz-card-bg to-denz-warning/5 border border-denz-warning/20;
+  }
+
+  .card-gradient-teal {
+    @apply bg-gradient-to-br from-denz-card-bg to-denz-teal/5 border border-denz-teal/20;
   }
 }
 

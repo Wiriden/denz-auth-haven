@@ -72,28 +72,28 @@ const vehicles: Vehicle[] = [
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case "high":
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-denz-danger/20 text-denz-danger border-denz-danger/20";
     case "medium":
-      return "bg-amber-100 text-amber-700 border-amber-200";
+      return "bg-denz-warning/20 text-denz-warning border-denz-warning/20";
     case "low":
-      return "bg-emerald-100 text-emerald-700 border-emerald-200";
+      return "bg-denz-success/20 text-denz-success border-denz-success/20";
     default:
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-denz-gray-200/10 text-denz-gray-200 border-denz-gray-300/20";
   }
 };
 
 const getDaysLeftColor = (days: number) => {
-  if (days <= 14) return "text-red-600";
-  if (days <= 30) return "text-amber-600";
-  return "text-emerald-600";
+  if (days <= 14) return "text-denz-danger";
+  if (days <= 30) return "text-denz-warning";
+  return "text-denz-success";
 };
 
 const getTimeLeftIndicator = (hours: number) => {
-  const color = hours <= 24 ? "text-red-600" : "text-emerald-600";
+  const colorClass = hours <= 24 ? "status-danger" : "status-success";
   return (
-    <div className="flex items-center gap-1.5">
-      <Clock size={14} className={color} />
-      <span className={`font-medium ${color}`}>{hours}h</span>
+    <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full border ${colorClass}`}>
+      <Clock size={14} />
+      <span className="font-medium">{hours}h</span>
     </div>
   );
 };
@@ -103,20 +103,20 @@ const Oversikt = () => {
     <div className="animate-fadeIn space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Assetmaster Översikt</h1>
-          <p className="text-slate-500 mt-1">En överblick över system, tillgångar och certifikat</p>
+          <h1 className="text-2xl font-bold text-white">Assetmaster Översikt</h1>
+          <p className="text-denz-gray-400 mt-1">En överblick över system, tillgångar och certifikat</p>
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 text-white border-denz-gray-700 hover:bg-denz-gray-800 hover:text-denz-blue">
             <BarChart4 size={16} />
             Rapporter
           </Button>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">3</span>
-                <Bell size={18} className="text-slate-600" />
+              <Button variant="outline" size="icon" className="relative text-white border-denz-gray-700 hover:bg-denz-gray-800">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-denz-danger text-[10px] text-white">3</span>
+                <Bell size={18} />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -127,136 +127,137 @@ const Oversikt = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-blue-50 to-blue-100 border-b border-slate-200">
+        <Card className="shadow-card hover:shadow-card-hover transition-shadow bg-denz-dark border-denz-gray-700 overflow-hidden">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-denz-gray-700 card-gradient-blue">
             <div className="space-y-0.5">
-              <CardTitle className="text-slate-800">Anställda</CardTitle>
-              <p className="text-sm text-slate-500">Certifikatstatus</p>
+              <CardTitle className="text-white">Anställda</CardTitle>
+              <p className="text-sm text-denz-gray-300">Certifikatstatus</p>
             </div>
-            <div className="bg-white p-2 rounded-full shadow-sm">
-              <Users size={20} className="text-blue-600" />
+            <div className="bg-denz-blue p-2 rounded-full shadow-glow">
+              <Users size={20} className="text-white" />
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-600 text-sm font-medium">Aktiva certifikat</span>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 hover:bg-blue-100">5</Badge>
+                <span className="text-denz-gray-300 text-sm font-medium">Aktiva certifikat</span>
+                <Badge variant="outline" className="bg-denz-blue/20 text-denz-blue border-denz-blue/40">5</Badge>
               </div>
               <div className="space-y-3 mt-3">
                 {certificates.slice(0, 3).map((cert, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-slate-50 rounded-md border border-slate-100">
+                  <div key={index} className="flex justify-between items-center p-2 bg-black/20 rounded-md border border-denz-gray-700">
                     <div className="flex items-center gap-2">
-                      <Award size={16} className="text-blue-500" />
+                      <Award size={16} className="text-denz-blue" />
                       <div>
-                        <div className="font-medium text-slate-700">{cert.name}</div>
-                        <div className="text-xs text-slate-500">{cert.employee}</div>
+                        <div className="font-medium text-white">{cert.name}</div>
+                        <div className="text-xs text-denz-gray-400">{cert.employee}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Calendar size={14} className={getDaysLeftColor(cert.daysLeft)} />
-                      <span className={`text-sm font-medium ${getDaysLeftColor(cert.daysLeft)}`}>
+                    <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full border ${getDaysLeftColor(cert.daysLeft) === "text-denz-danger" ? "status-danger" : 
+                      getDaysLeftColor(cert.daysLeft) === "text-denz-warning" ? "status-warning" : "status-success"}`}>
+                      <Calendar size={14} />
+                      <span className="text-sm font-medium">
                         {cert.daysLeft} dagar
                       </span>
                     </div>
                   </div>
                 ))}
                 {certificates.length > 3 && (
-                  <Button variant="ghost" size="sm" className="w-full text-blue-600 hover:text-blue-700 justify-between">
+                  <Button variant="ghost" size="sm" className="w-full text-denz-blue hover:text-denz-blue hover:bg-denz-blue/10 justify-between">
                     <span>Visa alla certifikat</span>
                     <ChevronRight size={16} />
                   </Button>
                 )}
               </div>
             </div>
-            <div className="pt-2 border-t border-slate-100">
-              <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+            <div className="pt-2 border-t border-denz-gray-700">
+              <Button variant="outline" className="w-full text-denz-blue border-denz-blue/30 hover:bg-denz-blue/10 hover:text-denz-blue">
                 Hantera anställda
               </Button>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-emerald-100 border-b border-slate-200">
+        <Card className="shadow-card hover:shadow-card-hover transition-shadow bg-denz-dark border-denz-gray-700 overflow-hidden">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-denz-gray-700 card-gradient-green">
             <div className="space-y-0.5">
-              <CardTitle className="text-slate-800">Fordon</CardTitle>
-              <p className="text-sm text-slate-500">Servicestatus</p>
+              <CardTitle className="text-white">Fordon</CardTitle>
+              <p className="text-sm text-denz-gray-300">Servicestatus</p>
             </div>
-            <div className="bg-white p-2 rounded-full shadow-sm">
-              <Car size={20} className="text-emerald-600" />
+            <div className="bg-denz-success p-2 rounded-full shadow-glow">
+              <Car size={20} className="text-white" />
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-600 text-sm font-medium">Under service</span>
-                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100">2</Badge>
+                <span className="text-denz-gray-300 text-sm font-medium">Under service</span>
+                <Badge variant="outline" className="bg-denz-success/20 text-denz-success border-denz-success/40">2</Badge>
               </div>
               <div className="space-y-3 mt-3">
                 {vehicles.map((vehicle, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-slate-50 rounded-md border border-slate-100">
+                  <div key={index} className="flex justify-between items-center p-2 bg-black/20 rounded-md border border-denz-gray-700">
                     <div>
-                      <div className="font-medium text-slate-700">{vehicle.name}</div>
-                      <div className="text-xs text-slate-500">{vehicle.regNumber}</div>
+                      <div className="font-medium text-white">{vehicle.name}</div>
+                      <div className="text-xs text-denz-gray-400">{vehicle.regNumber}</div>
                     </div>
                     {getTimeLeftIndicator(vehicle.hoursLeft)}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="pt-2 border-t border-slate-100">
-              <Button variant="outline" className="w-full text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+            <div className="pt-2 border-t border-denz-gray-700">
+              <Button variant="outline" className="w-full text-denz-success border-denz-success/30 hover:bg-denz-success/10 hover:text-denz-success">
                 Schemalägg service
               </Button>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="shadow-sm hover:shadow-md transition-shadow overflow-hidden border-slate-200">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between bg-gradient-to-r from-purple-50 to-purple-100 border-b border-slate-200">
+        <Card className="shadow-card hover:shadow-card-hover transition-shadow bg-denz-dark border-denz-gray-700 overflow-hidden">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-denz-gray-700 card-gradient-purple">
             <div className="space-y-0.5">
-              <CardTitle className="text-slate-800">Tillgångar</CardTitle>
-              <p className="text-sm text-slate-500">Användningsstatus</p>
+              <CardTitle className="text-white">Tillgångar</CardTitle>
+              <p className="text-sm text-denz-gray-300">Användningsstatus</p>
             </div>
-            <div className="bg-white p-2 rounded-full shadow-sm">
-              <Package size={20} className="text-purple-600" />
+            <div className="bg-denz-purple p-2 rounded-full shadow-glow">
+              <Package size={20} className="text-white" />
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-600 text-sm font-medium">Total tillgångar</span>
-                <span className="text-2xl font-bold text-purple-600">23</span>
+                <span className="text-denz-gray-300 text-sm font-medium">Total tillgångar</span>
+                <span className="text-2xl font-bold text-denz-purple">23</span>
               </div>
               
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Utcheckade</span>
-                  <span className="font-medium text-amber-600">18 (78%)</span>
+                  <span className="text-denz-gray-300">Utcheckade</span>
+                  <span className="font-medium text-denz-warning">18 (78%)</span>
                 </div>
                 <Progress 
                   value={78} 
-                  className="h-2 bg-slate-100" 
-                  indicatorClassName="bg-gradient-to-r from-amber-400 to-amber-500" 
+                  className="h-2.5 bg-black/40" 
+                  indicatorClassName="bg-gradient-to-r from-denz-warning/70 to-denz-warning" 
                 />
                 
                 <div className="flex justify-between text-sm mt-3">
-                  <span className="text-slate-600">Tillgängliga</span>
-                  <span className="font-medium text-emerald-600">5 (22%)</span>
+                  <span className="text-denz-gray-300">Tillgängliga</span>
+                  <span className="font-medium text-denz-success">5 (22%)</span>
                 </div>
                 <Progress 
                   value={22} 
-                  className="h-2 bg-slate-100" 
-                  indicatorClassName="bg-gradient-to-r from-emerald-400 to-emerald-500" 
+                  className="h-2.5 bg-black/40" 
+                  indicatorClassName="bg-gradient-to-r from-denz-success/70 to-denz-success" 
                 />
               </div>
             </div>
-            <div className="pt-2 border-t border-slate-100 flex gap-2">
-              <Button variant="outline" className="flex-1 text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700">
+            <div className="pt-2 border-t border-denz-gray-700 flex gap-2">
+              <Button variant="outline" className="flex-1 text-denz-purple border-denz-purple/30 hover:bg-denz-purple/10 hover:text-denz-purple">
                 Hantera
               </Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+              <Button className="flex-1 bg-denz-purple hover:bg-denz-purple/90 text-white">
                 Checka ut
               </Button>
             </div>
@@ -266,43 +267,43 @@ const Oversikt = () => {
       
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-slate-800">Senaste aktiviteter</h2>
+          <h2 className="text-xl font-semibold text-white">Senaste aktiviteter</h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-1">
+            <Button variant="outline" size="sm" className="gap-1 text-denz-gray-300 border-denz-gray-700 hover:bg-denz-gray-800">
               <Filter size={14} />
               Filter
             </Button>
-            <Button variant="outline" size="sm" className="gap-1">
+            <Button variant="outline" size="sm" className="gap-1 text-denz-gray-300 border-denz-gray-700 hover:bg-denz-gray-800">
               <Search size={14} />
               Sök
             </Button>
           </div>
         </div>
-        <Card className="shadow-sm divide-y divide-slate-100 border-slate-200">
+        <Card className="shadow-card divide-y divide-denz-gray-700 border-denz-gray-700 bg-denz-dark">
           {activities.map((activity, index) => (
-            <div key={index} className="p-4 hover:bg-slate-50 transition-colors">
+            <div key={index} className="p-4 hover:bg-black/20 transition-colors">
               <div className="flex justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-medium text-slate-800">{activity.title}</h3>
+                    <h3 className="font-medium text-white">{activity.title}</h3>
                     {activity.priority && (
                       <Badge variant="outline" className={`${getPriorityColor(activity.priority)}`}>
                         {activity.priority === "high" ? "Hög" : activity.priority === "medium" ? "Medium" : "Låg"}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-slate-600 mt-1 text-sm">{activity.description}</p>
+                  <p className="text-denz-gray-400 mt-1 text-sm">{activity.description}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-slate-500 font-medium">{activity.date}{activity.timestamp && `, ${activity.timestamp}`}</p>
+                  <p className="text-xs text-denz-gray-500 font-medium">{activity.date}{activity.timestamp && `, ${activity.timestamp}`}</p>
                   <div className="mt-2">
                     {activity.title.includes("Certifikat") && (
-                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 h-7 rounded-md text-xs px-2">
+                      <Button size="sm" className="bg-denz-blue hover:bg-denz-blue/90 h-7 rounded-md text-xs px-2">
                         Förnya
                       </Button>
                     )}
                     {activity.title.includes("Fordon") && (
-                      <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 h-7 rounded-md text-xs px-2">
+                      <Button size="sm" className="bg-denz-success hover:bg-denz-success/90 h-7 rounded-md text-xs px-2">
                         Detaljer
                       </Button>
                     )}
@@ -314,18 +315,18 @@ const Oversikt = () => {
         </Card>
       </div>
       
-      <Card className="shadow-sm border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100">
+      <Card className="shadow-card border-denz-warning/30 bg-gradient-to-r from-denz-warning/5 to-denz-warning/10 backdrop-blur-sm">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="bg-white p-2 rounded-full shadow-sm flex-shrink-0">
-              <AlertTriangle size={20} className="text-amber-500" />
+            <div className="bg-denz-warning/20 border border-denz-warning/30 p-2 rounded-full shadow-glow flex-shrink-0">
+              <AlertTriangle size={20} className="text-denz-warning" />
             </div>
             <div>
-              <h3 className="font-medium text-slate-800">Kommande händelser</h3>
-              <p className="text-sm text-slate-600 mt-1">
+              <h3 className="font-medium text-white">Kommande händelser</h3>
+              <p className="text-sm text-denz-gray-300 mt-1">
                 2 certifikat närmar sig utgångsdatum och behöver förnyas inom de kommande 30 dagarna.
               </p>
-              <Button variant="outline" size="sm" className="mt-2 text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700">
+              <Button variant="outline" size="sm" className="mt-2 text-denz-warning border-denz-warning/30 hover:bg-denz-warning/10 hover:text-denz-warning">
                 Visa detaljer
               </Button>
             </div>

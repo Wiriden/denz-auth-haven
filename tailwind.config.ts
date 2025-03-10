@@ -54,13 +54,31 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				denz: {
-					blue: '#0E84FF',
-					'dark-blue': '#085BB1',
-					'deep-blue': '#0C3C73',
-					dark: '#111827',
-					darker: '#0B111F',
-					darkest: '#080C17',
-					'card-bg': '#1A1D2E',
+					blue: '#3B82F6',
+					'dark-blue': '#2563EB',
+					'deep-blue': '#1D4ED8',
+					dark: '#1E293B',
+					darker: '#0F172A',
+					darkest: '#030712',
+					'card-bg': '#1E2235',
+					'success': '#10B981',
+					'warning': '#F59E0B',
+					'danger': '#EF4444',
+					'info': '#3B82F6',
+					'purple': '#8B5CF6',
+					'teal': '#14B8A6',
+					'gray': {
+						50: '#F9FAFB',
+						100: '#F3F4F6',
+						200: '#E5E7EB',
+						300: '#D1D5DB',
+						400: '#9CA3AF',
+						500: '#6B7280',
+						600: '#4B5563',
+						700: '#374151',
+						800: '#1F2937',
+						900: '#111827',
+					}
 				}
 			},
 			borderRadius: {
@@ -105,6 +123,11 @@ export default {
 				fadeIn: 'fadeIn 0.5s ease-in-out forwards',
 				pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 				shimmer: 'shimmer 2s infinite',
+			},
+			boxShadow: {
+				'glow': '0 0 5px rgba(59, 130, 246, 0.5)',
+				'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+				'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
 			}
 		}
 	},
