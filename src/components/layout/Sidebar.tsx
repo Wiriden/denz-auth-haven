@@ -28,7 +28,7 @@ const sidebarItems: SidebarItem[] = [
     subItems: [
       { title: "Översikt", path: "/dashboard/oversikt" },
       { title: "Anställda", path: "/dashboard/anstallda" },
-      { title: "Verktyg", path: "/dashboard/utrustning" },
+      { title: "Material", path: "/dashboard/utrustning" },
       { title: "Administration", path: "/dashboard/administration" },
     ],
   },

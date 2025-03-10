@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Hammer, Search, Filter, Plus, CheckCircle, XCircle } from "lucide-react";
@@ -16,11 +15,11 @@ type Tool = {
 };
 
 const toolsData: Tool[] = [
-  { id: "VE-001", name: "Borrmaskin", category: "Verktyg", assignedTo: "Johan Berg", lastChecked: "2023-10-05", status: "checked-out" },
-  { id: "VE-002", name: "Skruvdragare", category: "Verktyg", assignedTo: "Anna Karlsson", lastChecked: "2023-10-12", status: "checked-out" },
-  { id: "VE-003", name: "Multimeter", category: "Verktyg", assignedTo: null, lastChecked: "2023-10-15", status: "available" },
-  { id: "VE-004", name: "Hammare", category: "Verktyg", assignedTo: "Erik Holm", lastChecked: "2023-09-28", status: "checked-out" },
-  { id: "VE-005", name: "Slipmaskin", category: "Verktyg", assignedTo: null, lastChecked: "2023-10-01", status: "maintenance" },
+  { id: "VE-001", name: "Borrmaskin", category: "Material", assignedTo: "Johan Berg", lastChecked: "2023-10-05", status: "checked-out" },
+  { id: "VE-002", name: "Skruvdragare", category: "Material", assignedTo: "Anna Karlsson", lastChecked: "2023-10-12", status: "checked-out" },
+  { id: "VE-003", name: "Multimeter", category: "Material", assignedTo: null, lastChecked: "2023-10-15", status: "available" },
+  { id: "VE-004", name: "Hammare", category: "Material", assignedTo: "Erik Holm", lastChecked: "2023-09-28", status: "checked-out" },
+  { id: "VE-005", name: "Slipmaskin", category: "Material", assignedTo: null, lastChecked: "2023-10-01", status: "maintenance" },
 ];
 
 const getStatusColor = (status: string) => {
@@ -59,7 +58,7 @@ const Utrustning = () => {
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
           <Hammer size={24} className="text-[#3B82F6] mr-2" />
-          <h1 className="text-2xl font-bold text-white">Verktyg</h1>
+          <h1 className="text-2xl font-bold text-white">Material</h1>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="flex gap-2 border-[#334155] text-white hover:bg-[#1E293B]">
@@ -72,7 +71,7 @@ const Utrustning = () => {
           </Button>
           <Button className="bg-[#3B82F6] hover:bg-[#3B82F6]/90">
             <Plus size={16} className="mr-1" />
-            Lägg till verktyg
+            Lägg till material
           </Button>
         </div>
       </div>
@@ -80,7 +79,7 @@ const Utrustning = () => {
       <div className="flex gap-4 mb-6">
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#64748B]" size={18} />
-          <Input className="pl-10 bg-[#111827] border-[#334155] text-white placeholder:text-[#64748B]" placeholder="Sök efter verktyg" />
+          <Input className="pl-10 bg-[#111827] border-[#334155] text-white placeholder:text-[#64748B]" placeholder="Sök efter material" />
         </div>
         <Button variant="outline" className="flex gap-2 border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]">
           <Filter size={18} />
@@ -91,7 +90,7 @@ const Utrustning = () => {
       <div className="grid grid-cols-4 gap-4 mb-6">
         <Card className="p-4 flex items-center justify-between bg-[#111827] border-[#334155]">
           <div>
-            <p className="text-sm text-[#94A3B8]">Totalt verktyg</p>
+            <p className="text-sm text-[#94A3B8]">Totalt material</p>
             <p className="text-2xl font-semibold text-white">23</p>
           </div>
           <Hammer size={24} className="text-[#64748B]" />
