@@ -10,7 +10,8 @@ import {
   ChevronRight, 
   ChevronLeft,
   LayoutDashboard,
-  Shield
+  Shield,
+  Folder
 } from "lucide-react";
 
 type SidebarItem = {
@@ -93,6 +94,13 @@ const Sidebar = () => {
               {/* Sub-items */}
               {isExpanded && item.subItems?.map((subItem) => {
                 const isActive = location.pathname === subItem.path;
+                
+                // Choose icon based on the path
+                let SubItemIcon = LayoutDashboard;
+                if (subItem.path.includes('anstallda')) SubItemIcon = Users;
+                if (subItem.path.includes('utrustning')) SubItemIcon = Box;
+                if (subItem.path.includes('administration')) SubItemIcon = Folder;
+                
                 return (
                   <div
                     key={subItem.title}
@@ -104,6 +112,7 @@ const Sidebar = () => {
                     )}
                     onClick={() => navigate(subItem.path)}
                   >
+                    <SubItemIcon size={16} className="mr-2" />
                     <span className="font-light text-sm">{subItem.title}</span>
                   </div>
                 );
