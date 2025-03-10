@@ -124,15 +124,15 @@ const employeeData: Employee[] = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case "active":
-      return "bg-emerald-100 text-emerald-700 border-emerald-200";
+      return "bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20";
     case "inactive":
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/20";
     case "sick":
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20";
     case "vacation":
-      return "bg-amber-100 text-amber-700 border-amber-200";
+      return "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20";
     default:
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/20";
   }
 };
 
@@ -179,10 +179,10 @@ const Anstallda = () => {
     <div className="animate-fadeIn space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Anställdhantering</h1>
-          <p className="text-slate-500 mt-1">Hantera personal och certifikat</p>
+          <h1 className="text-2xl font-bold text-white">Anställdhantering</h1>
+          <p className="text-[#94A3B8] mt-1">Hantera personal och certifikat</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 gap-1.5">
+        <Button className="bg-[#3B82F6] hover:bg-[#3B82F6]/90 gap-1.5">
           <Plus size={16} />
           Lägg till anställd
         </Button>
@@ -190,42 +190,42 @@ const Anstallda = () => {
       
       <div className="flex gap-4 mb-6">
         <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
-          <Input className="pl-10 border-slate-200" placeholder="Sök anställd..." />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#64748B]" size={18} />
+          <Input className="pl-10 bg-[#111827] border-[#334155] text-white placeholder:text-[#64748B]" placeholder="Sök anställd..." />
         </div>
-        <Button variant="outline" className="flex gap-2 border-slate-200">
+        <Button variant="outline" className="flex gap-2 border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]">
           <Filter size={18} />
           Fler filter
         </Button>
       </div>
       
-      <Card className="shadow-sm overflow-hidden border-slate-200">
+      <Card className="shadow-md overflow-hidden border-[#334155] bg-[#111827]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 text-left border-b border-slate-200">
-                <th className="px-6 py-3 text-slate-600 font-medium">Namn</th>
-                <th className="px-6 py-3 text-slate-600 font-medium">Roll</th>
-                <th className="px-6 py-3 text-slate-600 font-medium">Avdelning</th>
-                <th className="px-6 py-3 text-slate-600 font-medium text-center">Certifikat</th>
-                <th className="px-6 py-3 text-slate-600 font-medium">Status</th>
-                <th className="px-6 py-3 text-slate-600 font-medium">Åtgärder</th>
+              <tr className="bg-[#0F172A] text-left border-b border-[#334155]">
+                <th className="px-6 py-3 text-[#94A3B8] font-medium">Namn</th>
+                <th className="px-6 py-3 text-[#94A3B8] font-medium">Roll</th>
+                <th className="px-6 py-3 text-[#94A3B8] font-medium">Avdelning</th>
+                <th className="px-6 py-3 text-[#94A3B8] font-medium text-center">Certifikat</th>
+                <th className="px-6 py-3 text-[#94A3B8] font-medium">Status</th>
+                <th className="px-6 py-3 text-[#94A3B8] font-medium">Åtgärder</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-[#334155]">
               {employeeData.map((employee) => (
-                <tr key={employee.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => handleEmployeeClick(employee)}>
-                  <td className="px-6 py-4 font-medium text-slate-800">{employee.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{employee.role}</td>
-                  <td className="px-6 py-4 text-slate-600">{employee.department}</td>
+                <tr key={employee.id} className="hover:bg-[#0F172A] transition-colors cursor-pointer" onClick={() => handleEmployeeClick(employee)}>
+                  <td className="px-6 py-4 font-medium text-white">{employee.name}</td>
+                  <td className="px-6 py-4 text-[#94A3B8]">{employee.role}</td>
+                  <td className="px-6 py-4 text-[#94A3B8]">{employee.department}</td>
                   <td className="px-6 py-4 text-center">
                     {employee.certificates.length > 0 ? (
                       <div className="flex items-center justify-center gap-1">
-                        <Award size={14} className="text-blue-500" />
-                        <span className="font-medium">{employee.certificates.length}</span>
+                        <Award size={14} className="text-[#3B82F6]" />
+                        <span className="font-medium text-white">{employee.certificates.length}</span>
                       </div>
                     ) : (
-                      <span>-</span>
+                      <span className="text-[#64748B]">-</span>
                     )}
                   </td>
                   <td className="px-6 py-4">
@@ -239,7 +239,7 @@ const Anstallda = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <Button variant="ghost" size="sm" className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                      <Button variant="ghost" size="sm" className="h-8 text-[#3B82F6] hover:text-[#3B82F6] hover:bg-[#3B82F6]/10">
                         Redigera
                       </Button>
                     </div>
@@ -251,13 +251,13 @@ const Anstallda = () => {
         </div>
       </Card>
       
-      <div className="flex justify-between items-center text-sm text-slate-600">
+      <div className="flex justify-between items-center text-sm text-[#94A3B8]">
         <div>Visar 1-5 av 5 anställda</div>
         <div className="flex space-x-2">
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-slate-200 text-slate-600"
+            className="border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]"
             disabled
           >
             <ChevronLeft size={16} className="mr-1" />
@@ -266,7 +266,7 @@ const Anstallda = () => {
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-slate-200 text-slate-600"
+            className="border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]"
             disabled
           >
             Nästa
@@ -277,7 +277,7 @@ const Anstallda = () => {
 
       {/* Employee Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-3xl bg-[#111827] border-[#334155] text-white">
           <DialogHeader>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
@@ -295,51 +295,51 @@ const Anstallda = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-slate-200 text-slate-600"
+                className="border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]"
                 onClick={() => setDialogOpen(false)}
               >
                 Tillbaka
               </Button>
             </div>
-            <DialogDescription className="text-slate-500">
+            <DialogDescription className="text-[#94A3B8]">
               {selectedEmployee?.role} - {selectedEmployee?.department}
             </DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="info" className="mt-4">
-            <TabsList className="mb-4">
-              <TabsTrigger value="info">Grundläggande info</TabsTrigger>
-              <TabsTrigger value="certs">Behörigheter & certifikat</TabsTrigger>
-              <TabsTrigger value="materials">Tilldelat material</TabsTrigger>
+            <TabsList className="mb-4 bg-[#0F172A]">
+              <TabsTrigger value="info" className="data-[state=active]:bg-[#1E293B] data-[state=active]:text-white">Grundläggande info</TabsTrigger>
+              <TabsTrigger value="certs" className="data-[state=active]:bg-[#1E293B] data-[state=active]:text-white">Behörigheter & certifikat</TabsTrigger>
+              <TabsTrigger value="materials" className="data-[state=active]:bg-[#1E293B] data-[state=active]:text-white">Tilldelat material</TabsTrigger>
             </TabsList>
 
             <TabsContent value="info" className="space-y-4">
-              <Card>
+              <Card className="bg-[#0F172A] border-[#334155]">
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-medium mb-4">Personlig information</h3>
+                  <h3 className="text-lg font-medium mb-4 text-white">Personlig information</h3>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                     <div>
-                      <p className="text-sm text-slate-500">Namn</p>
-                      <p className="font-medium">{selectedEmployee?.name}</p>
+                      <p className="text-sm text-[#94A3B8]">Namn</p>
+                      <p className="font-medium text-white">{selectedEmployee?.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">Roll</p>
-                      <p className="font-medium">{selectedEmployee?.role}</p>
+                      <p className="text-sm text-[#94A3B8]">Roll</p>
+                      <p className="font-medium text-white">{selectedEmployee?.role}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">E-post/Telefon</p>
-                      <p className="font-medium">{selectedEmployee?.contact || "Ej angivet"}</p>
+                      <p className="text-sm text-[#94A3B8]">E-post/Telefon</p>
+                      <p className="font-medium text-white">{selectedEmployee?.contact || "Ej angivet"}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">Avdelning</p>
-                      <p className="font-medium">{selectedEmployee?.department}</p>
+                      <p className="text-sm text-[#94A3B8]">Avdelning</p>
+                      <p className="font-medium text-white">{selectedEmployee?.department}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">Anställningsdatum</p>
-                      <p className="font-medium">{selectedEmployee?.hireDate || "Ej angivet"}</p>
+                      <p className="text-sm text-[#94A3B8]">Anställningsdatum</p>
+                      <p className="font-medium text-white">{selectedEmployee?.hireDate || "Ej angivet"}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-500">Status</p>
+                      <p className="text-sm text-[#94A3B8]">Status</p>
                       <Badge 
                         variant="outline" 
                         className={`mt-1 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 ${selectedEmployee ? getStatusColor(selectedEmployee.status) : ""}`}
@@ -354,11 +354,11 @@ const Anstallda = () => {
             </TabsContent>
 
             <TabsContent value="certs" className="space-y-4">
-              <Card>
+              <Card className="bg-[#0F172A] border-[#334155]">
                 <CardContent className="p-6">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">Behörigheter & certifikat</h3>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1">
+                    <h3 className="text-lg font-medium text-white">Behörigheter & certifikat</h3>
+                    <Button size="sm" className="bg-[#3B82F6] hover:bg-[#3B82F6]/90 flex items-center gap-1">
                       <Plus size={16} />
                       Lägg till certifikat
                     </Button>
@@ -367,20 +367,20 @@ const Anstallda = () => {
                   {selectedEmployee?.certificates && selectedEmployee.certificates.length > 0 ? (
                     <div className="space-y-3">
                       {selectedEmployee.certificates.map((cert, index) => (
-                        <div key={index} className="flex justify-between items-center border p-3 rounded-md">
+                        <div key={index} className="flex justify-between items-center border border-[#334155] p-3 rounded-md bg-[#111827]">
                           <div className="flex items-center gap-2">
-                            <BadgeCheck size={18} className="text-blue-500" />
+                            <BadgeCheck size={18} className="text-[#3B82F6]" />
                             <div>
-                              <p className="font-medium">{cert.name}</p>
-                              <p className="text-sm text-slate-500">Utgår: {cert.expiryDate}</p>
+                              <p className="font-medium text-white">{cert.name}</p>
+                              <p className="text-sm text-[#94A3B8]">Utgår: {cert.expiryDate}</p>
                             </div>
                           </div>
-                          <Button variant="outline" size="sm">Förnya</Button>
+                          <Button variant="outline" size="sm" className="text-[#3B82F6] border-[#3B82F6]/20 hover:bg-[#3B82F6]/10">Förnya</Button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-slate-500">
+                    <div className="text-center py-6 text-[#94A3B8]">
                       Inga certifikat registrerade
                     </div>
                   )}
@@ -389,11 +389,11 @@ const Anstallda = () => {
             </TabsContent>
 
             <TabsContent value="materials" className="space-y-4">
-              <Card>
+              <Card className="bg-[#0F172A] border-[#334155]">
                 <CardContent className="p-6">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">Tilldelat material</h3>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1">
+                    <h3 className="text-lg font-medium text-white">Tilldelat material</h3>
+                    <Button size="sm" className="bg-[#3B82F6] hover:bg-[#3B82F6]/90 flex items-center gap-1">
                       <Plus size={16} />
                       Tilldela material
                     </Button>
@@ -402,23 +402,23 @@ const Anstallda = () => {
                   {selectedEmployee?.assignedItems && selectedEmployee.assignedItems.length > 0 ? (
                     <div className="space-y-3">
                       {selectedEmployee.assignedItems.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center border p-3 rounded-md">
+                        <div key={index} className="flex justify-between items-center border border-[#334155] p-3 rounded-md bg-[#111827]">
                           <div className="flex items-center gap-2">
                             {item.type === "tool" ? 
-                              <Hammer size={18} className="text-blue-500" /> : 
-                              <Shield size={18} className="text-purple-500" />
+                              <Hammer size={18} className="text-[#3B82F6]" /> : 
+                              <Shield size={18} className="text-[#8B5CF6]" />
                             }
                             <div>
-                              <p className="font-medium">{item.name}</p>
-                              <p className="text-sm text-slate-500">ID: {item.id} • Tilldelad: {item.assignedDate}</p>
+                              <p className="font-medium text-white">{item.name}</p>
+                              <p className="text-sm text-[#94A3B8]">ID: {item.id} • Tilldelad: {item.assignedDate}</p>
                             </div>
                           </div>
-                          <Button variant="outline" size="sm">Återlämna</Button>
+                          <Button variant="outline" size="sm" className="border-[#334155] hover:bg-[#1E293B] text-white">Återlämna</Button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-slate-500">
+                    <div className="text-center py-6 text-[#94A3B8]">
                       Inget material tilldelat
                     </div>
                   )}
@@ -426,18 +426,18 @@ const Anstallda = () => {
                   {/* History section */}
                   {selectedEmployee?.historyItems && selectedEmployee.historyItems.length > 0 && (
                     <>
-                      <h4 className="text-md font-medium mt-6 mb-3">Historik</h4>
+                      <h4 className="text-md font-medium mt-6 mb-3 text-white">Historik</h4>
                       <div className="space-y-3">
                         {selectedEmployee.historyItems.map((item, index) => (
-                          <div key={index} className="flex justify-between items-center border border-slate-200 bg-slate-50 p-3 rounded-md">
+                          <div key={index} className="flex justify-between items-center border border-[#334155] bg-[#111827]/50 p-3 rounded-md">
                             <div className="flex items-center gap-2">
                               {item.type === "tool" ? 
-                                <Hammer size={18} className="text-slate-400" /> : 
-                                <Shield size={18} className="text-slate-400" />
+                                <Hammer size={18} className="text-[#64748B]" /> : 
+                                <Shield size={18} className="text-[#64748B]" />
                               }
                               <div>
-                                <p className="font-medium text-slate-700">{item.name}</p>
-                                <p className="text-sm text-slate-500">
+                                <p className="font-medium text-[#94A3B8]">{item.name}</p>
+                                <p className="text-sm text-[#64748B]">
                                   ID: {item.id} • {item.assignedDate} - {item.returnDate}
                                 </p>
                               </div>

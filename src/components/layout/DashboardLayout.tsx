@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 
 const DashboardLayout = () => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-[#0B1121]">
       <Sidebar />
       <div className="flex-1 overflow-auto">
         <div className="p-8">
