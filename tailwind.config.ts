@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -20,7 +19,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],
+				sans: ['Inter', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -57,34 +56,37 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				denz: {
-					blue: '#4C6EF5',
-					'dark-blue': '#3B5FE6',
-					'deep-blue': '#2A4ED8',
-					dark: '#2A2F36',
-					darker: '#1B1F24',
-					darkest: '#1B1F24',
-					'card-bg': '#2A2F36',
-					'success': '#2ECC71',
-					'warning': '#F9C74F',
-					'danger': '#E63946',
-					'info': '#4C6EF5',
-					'purple': '#8B5CF6',
-					'teal': '#14B8A6',
+					blue: '#4D8AF0',          // TeamGantt huvudblå
+					'dark-blue': '#3A78DE',   // Mörkare blå för hover
+					'deep-blue': '#2B68CD',
+					light: '#F5F7FA',         // Ljus bakgrund
+					lighter: '#FFFFFF',       // Vit bakgrund
+					dark: '#354052',          // Huvudtextfärg
+					darker: '#2A3141',
+					darkest: '#242A38',
+					'card-bg': '#FFFFFF',     // Kortbakgrund
+					'success': '#66CB9F',     // TeamGantt-grön
+					'warning': '#FFCF5C',     // TeamGantt-gul
+					'danger': '#F36D6D',      // TeamGantt-röd
+					'info': '#4D8AF0',        // TeamGantt-blå
+					'purple': '#9F7AEA',      // TeamGantt-lila
+					'teal': '#38B2AC',        // TeamGantt-turkos
 					'text': {
-						primary: '#E9ECEF',
-						secondary: '#8A8F98',
+						primary: '#354052',   // TeamGantt huvudtextfärg
+						secondary: '#8A94A6', // TeamGantt sekundär textfärg
 					},
+					'border': '#E6EAF0',      // TeamGantt kanttfärg
 					'gray': {
-						50: '#F8F9FA',
-						100: '#E9ECEF',
-						200: '#DEE2E6',
-						300: '#CED4DA',
-						400: '#ADB5BD',
-						500: '#8A8F98',
-						600: '#6C757D',
-						700: '#495057',
-						800: '#343A40',
-						900: '#212529',
+						50: '#F9FAFC',
+						100: '#F5F7FA',
+						200: '#E6EAF0',
+						300: '#D3DCE6',
+						400: '#C0CCDA',
+						500: '#8A94A6',
+						600: '#606F7B',
+						700: '#3C4858',
+						800: '#354052',
+						900: '#242A38',
 					}
 				}
 			},
@@ -132,9 +134,15 @@ export default {
 				shimmer: 'shimmer 2s infinite',
 			},
 			boxShadow: {
-				'glow': '0 0 5px rgba(76, 110, 245, 0.5)',
-				'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-				'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+				'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+				'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+				'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+				'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+				'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+				'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+				'none': 'none',
+				'card': '0 2px 5px rgba(0, 0, 0, 0.05)',
+				'card-hover': '0 4px 8px rgba(0, 0, 0, 0.08)',
 			},
 			typography: {
 				DEFAULT: {

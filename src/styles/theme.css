@@ -1,0 +1,114 @@
+:root {
+  /* Huvudfärger */
+  --denz-darker: #1A1E2D;
+  --denz-darkest: #151823;
+  --denz-dark: #1F2437;
+  --denz-primary: #4A6FDF;
+  --denz-primary-dark: #3D5CBF;
+  --denz-accent: #6E7BB8;
+  --denz-success: #3E9B7E;
+  --denz-danger: #D64B4B;
+  --denz-warning: #C99544;
+
+  /* Text */
+  --denz-text-primary: #E9EBF0;
+  --denz-text-secondary: #9BA1B0;
+  --denz-text-muted: #666D80;
+
+  /* Borders */
+  --denz-border: rgba(255, 255, 255, 0.08);
+  --denz-border-light: rgba(255, 255, 255, 0.12);
+
+  /* Bakgrunder */
+  --denz-bg-card: rgba(31, 36, 55, 0.7);
+  --denz-bg-hover: rgba(255, 255, 255, 0.03);
+  --denz-bg-active: rgba(255, 255, 255, 0.05);
+}
+
+/* Gemensamma komponentstilar */
+.glass-card {
+  background: var(--denz-bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--denz-border);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--denz-border-light);
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.success {
+  background: rgba(62, 155, 126, 0.1);
+  color: #7FC2A6;
+  border: 1px solid rgba(62, 155, 126, 0.2);
+}
+
+.status-badge.warning {
+  background: rgba(201, 149, 68, 0.1);
+  color: #E0B36A;
+  border: 1px solid rgba(201, 149, 68, 0.2);
+}
+
+.status-badge.danger {
+  background: rgba(214, 75, 75, 0.1);
+  color: #E88787;
+  border: 1px solid rgba(214, 75, 75, 0.2);
+}
+
+/* Animationer */
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+}
+
+.btn-shine:hover::after {
+  transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* Progress bars */
+.progress-bar {
+  height: 4px;
+  background: var(--denz-bg-hover);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+} 

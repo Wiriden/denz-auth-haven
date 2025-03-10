@@ -1,30 +1,29 @@
-
-import React, { useState } from "react";
-import { 
-  Folder, 
-  Search, 
-  Filter, 
-  Plus,
-  Pencil,
-  Trash2,
-  ArrowLeft,
-  FileText,
-  Package
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogFooter
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    ArrowLeft,
+    Filter,
+    Folder,
+    Package,
+    Pencil,
+    Plus,
+    Search,
+    Trash2
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data for categories
 type Category = {
@@ -86,13 +85,13 @@ const mockItems: Record<string, Item[]> = {
 const getStatusColor = (status: Item["status"]) => {
   switch (status) {
     case "available":
-      return "bg-green-500/10 text-green-500 border-green-500/30";
+      return "bg-emerald-50 text-emerald-600 border-emerald-200";
     case "in-use":
-      return "bg-blue-500/10 text-blue-500 border-blue-500/30";
+      return "bg-sky-50 text-sky-600 border-sky-200";
     case "maintenance":
-      return "bg-amber-500/10 text-amber-500 border-amber-500/30";
+      return "bg-amber-50 text-amber-600 border-amber-200";
     default:
-      return "bg-gray-500/10 text-gray-500 border-gray-500/30";
+      return "bg-gray-50 text-gray-600 border-gray-200";
   }
 };
 
@@ -225,390 +224,279 @@ const Administration = () => {
       {!selectedCategory ? (
         // Categories List View
         <>
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center">
-              <Folder size={24} className="text-denz-blue mr-2" />
-              <h1 className="text-2xl font-bold text-denz-text-primary">Materialkategorier</h1>
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-xl font-medium text-denz-text-primary mb-1 flex items-center">
+                <Folder size={20} className="text-denz-blue mr-2" />
+                Materialkategorier
+              </h1>
+              <p className="text-sm text-denz-text-secondary">
+                Här kan du lägga till, redigera och ta bort kategorier för material.
+              </p>
             </div>
             <Button 
               onClick={() => {
                 setNewCategory({ name: "", description: "" });
                 setIsAddDialogOpen(true);
               }}
-              className="bg-denz-blue hover:bg-denz-blue/90"
+              className="bg-denz-blue hover:bg-denz-dark-blue text-sm font-medium h-9 px-4"
             >
-              <Plus size={16} className="mr-1" />
+              <Plus size={16} className="mr-1.5" />
               Lägg till kategori
             </Button>
           </div>
           
-          <p className="text-denz-text-secondary mb-6">
-            Här kan du lägga till, redigera och ta bort kategorier för material.
-          </p>
-          
-          <div className="flex gap-4 mb-6">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-denz-text-secondary" size={18} />
-              <Input 
-                className="pl-10 bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
-                placeholder="Sök bland kategorier..." 
+          <div className="flex gap-3 mb-5 items-center">
+            <div className="relative flex-grow max-w-md">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-denz-text-secondary" />
+              <Input
+                type="text"
+                placeholder="Sök bland kategorier..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 py-2 h-9 bg-white text-sm teamgantt-search"
               />
             </div>
-            <Button variant="outline" className="flex gap-2 border-denz-gray-700/30 text-denz-text-secondary hover:bg-denz-dark">
-              <Filter size={18} />
+            <Button variant="outline" size="sm" className="h-9 border-gray-200 text-denz-text-secondary">
+              <Filter size={16} className="mr-1.5" />
               Filter
             </Button>
           </div>
           
-          <Card className="shadow-md overflow-hidden border-denz-gray-700/30 bg-denz-darker">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-denz-dark text-left border-b border-denz-gray-700/30">
-                    <th className="px-6 py-3 text-denz-text-secondary font-medium">ID</th>
-                    <th className="px-6 py-3 text-denz-text-secondary font-medium">Namn</th>
-                    <th className="px-6 py-3 text-denz-text-secondary font-medium">Beskrivning</th>
-                    <th className="px-6 py-3 text-denz-text-secondary font-medium">Antal material</th>
-                    <th className="px-6 py-3 text-denz-text-secondary font-medium">Åtgärder</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-denz-gray-700/30">
-                  {filteredCategories.length > 0 ? (
-                    filteredCategories.map((category) => (
-                      <tr 
-                        key={category.id} 
-                        className="hover:bg-denz-dark transition-colors cursor-pointer"
-                        onClick={() => handleViewCategoryDetails(category)}
-                      >
-                        <td className="px-6 py-4 font-medium text-denz-text-primary">{category.id}</td>
-                        <td className="px-6 py-4 text-denz-text-primary">{category.name}</td>
-                        <td className="px-6 py-4 text-denz-text-secondary">
-                          {category.description || "—"}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Badge variant="outline" className="font-normal bg-denz-blue/10 text-denz-blue border-denz-blue/30">
-                            {category.itemCount} st
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4" onClick={e => e.stopPropagation()}>
-                          <div className="flex space-x-3">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-denz-text-secondary hover:text-denz-blue hover:bg-denz-dark"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditCategory(category);
-                              }}
-                            >
-                              <Pencil size={16} className="mr-1" />
-                              Redigera
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="text-denz-text-secondary hover:text-denz-danger hover:bg-denz-dark"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCategory(category);
-                              }}
-                            >
-                              <Trash2 size={16} className="mr-1" />
-                              Ta bort
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-denz-text-secondary">
-                        Inga kategorier hittades
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+            <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-600 tracking-wide">
+              <div className="col-span-2">ID</div>
+              <div className="col-span-3">Namn</div>
+              <div className="col-span-4">Beskrivning</div>
+              <div className="col-span-2 text-center">Antal material</div>
+              <div className="col-span-1 text-right">Åtgärder</div>
             </div>
-          </Card>
-          
-          <div className="mt-6 flex justify-between items-center text-sm text-denz-text-secondary">
-            <div>Visar {filteredCategories.length} av {categories.length} kategorier</div>
+            
+            {filteredCategories.length > 0 ? (
+              <div>
+                {filteredCategories.map((category) => (
+                  <div 
+                    key={category.id} 
+                    className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-blue-50/50 text-sm items-center"
+                  >
+                    <div className="col-span-2 text-denz-text-secondary">{category.id}</div>
+                    <div className="col-span-3 font-medium text-denz-text-primary">{category.name}</div>
+                    <div className="col-span-4 text-denz-text-secondary line-clamp-1">{category.description}</div>
+                    <div className="col-span-2 text-center">
+                      <Badge variant="outline" className="bg-denz-blue/5 text-denz-blue border-denz-blue/20 px-2 py-0.5 text-xs">
+                        {category.itemCount} st
+                      </Badge>
+                    </div>
+                    <div className="col-span-1 flex justify-end gap-2">
+                      <button 
+                        onClick={() => handleEditCategory(category)}
+                        className="text-denz-text-secondary hover:text-denz-blue rounded-full p-1.5 hover:bg-blue-50 transition-colors"
+                        aria-label="Redigera"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteCategory(category)}
+                        className="text-denz-text-secondary hover:text-rose-500 rounded-full p-1.5 hover:bg-rose-50 transition-colors"
+                        aria-label="Ta bort"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="px-4 py-3 text-sm text-denz-text-secondary">
+                  Visar {filteredCategories.length} av {categories.length} kategorier
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center">
+                <div className="bg-gray-50 inline-flex rounded-full p-3 mb-3">
+                  <Folder className="h-6 w-6 text-denz-text-secondary" />
+                </div>
+                <h3 className="text-lg font-medium text-denz-text-primary">Inga kategorier hittades</h3>
+                <p className="text-denz-text-secondary mt-1 mb-4">
+                  Det finns inga kategorier som matchar din sökning.
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSearchQuery("")}
+                  className="text-sm"
+                >
+                  Rensa sökning
+                </Button>
+              </div>
+            )}
           </div>
         </>
       ) : (
-        // Category Detail View
-        <>
-          <div className="mb-8">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="mb-4 border-denz-gray-700/30 text-denz-text-secondary hover:bg-denz-dark"
+        // Category Details View
+        <div>
+          <div className="flex items-center mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleBackToCategories}
+              className="mr-2 text-denz-text-secondary hover:text-denz-text-primary"
             >
-              <ArrowLeft size={16} className="mr-1" />
+              <ArrowLeft size={16} className="mr-1.5" />
               Tillbaka
             </Button>
-            
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
-              <div>
-                <div className="flex items-center">
-                  <Folder size={24} className="text-denz-blue mr-2" />
-                  <h1 className="text-2xl font-bold text-denz-text-primary">{selectedCategory.name}</h1>
-                </div>
-                {selectedCategory.description && (
-                  <p className="text-denz-text-secondary mt-1">
-                    {selectedCategory.description}
-                  </p>
-                )}
-              </div>
-              
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="border-denz-gray-700/30 text-denz-text-secondary hover:bg-denz-dark"
-                  onClick={() => handleEditCategory(selectedCategory)}
-                >
-                  <Pencil size={16} className="mr-1" />
-                  Redigera kategori
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-denz-danger/30 text-denz-danger hover:bg-denz-dark"
-                  onClick={() => handleDeleteCategory(selectedCategory)}
-                >
-                  <Trash2 size={16} className="mr-1" />
-                  Ta bort kategori
-                </Button>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-denz-text-secondary" size={18} />
-                  <Input 
-                    className="pl-10 bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
-                    placeholder="Sök material inom kategorin..." 
-                    value={itemSearchQuery}
-                    onChange={(e) => setItemSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div className="flex gap-2">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-                  <TabsList className="bg-denz-dark">
-                    <TabsTrigger value="list" className="data-[state=active]:bg-denz-darker data-[state=active]:text-denz-text-primary">
-                      Lista
-                    </TabsTrigger>
-                    <TabsTrigger value="grid" className="data-[state=active]:bg-denz-darker data-[state=active]:text-denz-text-primary">
-                      Rutnät
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-                
-                <Button className="bg-denz-blue hover:bg-denz-blue/90">
-                  <Plus size={16} className="mr-1" />
-                  Lägg till material
-                </Button>
-              </div>
-            </div>
-            
-            <div className="mb-4 p-4 rounded-md bg-denz-blue/10 border border-denz-blue/30 text-denz-blue">
-              <div className="flex items-center">
-                <Package size={18} className="mr-2" />
-                <span className="font-medium">Kategori-ID: {selectedCategory.id}</span>
-                <span className="mx-3">•</span>
-                <span>{categoryItems.length} material i denna kategori</span>
-              </div>
-            </div>
+            <h1 className="text-xl font-medium text-denz-text-primary">
+              {selectedCategory.name}
+            </h1>
           </div>
           
-          <TabsContent value="list" className="m-0">
-            <Card className="shadow-md overflow-hidden border-denz-gray-700/30 bg-denz-darker">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-denz-dark text-left border-b border-denz-gray-700/30">
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">ID</th>
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">Namn</th>
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">Beskrivning</th>
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">Status</th>
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">Serienummer</th>
-                      <th className="px-6 py-3 text-denz-text-secondary font-medium">Åtgärder</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-denz-gray-700/30">
-                    {categoryItems.length > 0 ? (
-                      categoryItems.map((item) => (
-                        <tr key={item.id} className="hover:bg-denz-dark transition-colors">
-                          <td className="px-6 py-4 font-medium text-denz-text-primary">{item.id}</td>
-                          <td className="px-6 py-4 text-denz-text-primary">{item.name}</td>
-                          <td className="px-6 py-4 text-denz-text-secondary">
-                            {item.description || "—"}
-                          </td>
-                          <td className="px-6 py-4">
-                            <Badge variant="outline" className={`font-normal ${getStatusColor(item.status)}`}>
-                              {getStatusLabel(item.status)}
-                            </Badge>
-                          </td>
-                          <td className="px-6 py-4 text-denz-text-secondary">
-                            {item.serialNumber || "—"}
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex space-x-3">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="text-denz-text-secondary hover:text-denz-blue hover:bg-denz-dark"
-                              >
-                                <Pencil size={16} className="mr-1" />
-                                Redigera
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="text-denz-text-secondary hover:text-denz-danger hover:bg-denz-dark"
-                              >
-                                <Trash2 size={16} className="mr-1" />
-                                Ta bort
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center text-denz-text-secondary">
-                          Inga material hittades i denna kategori
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Card className="p-4 bg-white">
+              <div className="flex justify-between items-start mb-2">
+                <div className="text-sm font-medium text-denz-text-secondary">ID</div>
+                <Badge variant="outline" className="bg-gray-50 text-denz-text-secondary border-gray-200">
+                  {selectedCategory.id}
+                </Badge>
+              </div>
+              <div className="mb-4">
+                <div className="text-sm font-medium text-denz-text-secondary mb-1">Beskrivning</div>
+                <p className="text-denz-text-primary">{selectedCategory.description}</p>
+              </div>
+              <div className="mt-auto">
+                <div className="text-sm font-medium text-denz-text-secondary mb-1">Antal material</div>
+                <Badge variant="outline" className="bg-denz-blue/5 text-denz-blue border-denz-blue/20 px-2 py-0.5">
+                  {selectedCategory.itemCount} st
+                </Badge>
               </div>
             </Card>
-          </TabsContent>
-          
-          <TabsContent value="grid" className="m-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            <Card className="p-4 col-span-2 bg-white flex flex-col">
+              <h3 className="font-medium text-denz-text-primary mb-3 flex items-center">
+                <Package size={16} className="mr-1.5 text-denz-blue" />
+                Material i denna kategori
+              </h3>
+              
+              <div className="relative mb-4">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-denz-text-secondary" />
+                <Input
+                  type="text"
+                  placeholder="Sök material..."
+                  value={itemSearchQuery}
+                  onChange={(e) => setItemSearchQuery(e.target.value)}
+                  className="pl-9 h-9 bg-white text-sm teamgantt-search"
+                />
+              </div>
+              
               {categoryItems.length > 0 ? (
-                categoryItems.map((item) => (
-                  <Card key={item.id} className="border-denz-gray-700/30 bg-denz-darker hover:border-denz-blue/50 transition-all">
-                    <div className="p-4">
-                      <div className="flex justify-between mb-2">
-                        <Badge variant="outline" className={`font-normal ${getStatusColor(item.status)}`}>
-                          {getStatusLabel(item.status)}
-                        </Badge>
-                        <span className="text-xs text-denz-text-secondary">{item.id}</span>
-                      </div>
-                      
-                      <h3 className="text-denz-text-primary font-medium mb-2">{item.name}</h3>
-                      
-                      {item.description && (
-                        <p className="text-denz-text-secondary text-sm mb-3">
-                          {item.description}
-                        </p>
-                      )}
-                      
-                      {item.serialNumber && (
-                        <div className="flex items-center text-xs text-denz-text-secondary mb-1">
-                          <FileText size={12} className="mr-1" />
-                          <span>Serienummer: {item.serialNumber}</span>
+                <div className="overflow-hidden border border-gray-200 rounded-md">
+                  <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-50 border-b border-gray-200 text-xs font-medium text-gray-600">
+                    <div className="col-span-3">Namn</div>
+                    <div className="col-span-5">Beskrivning</div>
+                    <div className="col-span-2">Serial nr.</div>
+                    <div className="col-span-2 text-right">Status</div>
+                  </div>
+                  
+                  <div className="max-h-[240px] overflow-y-auto">
+                    {categoryItems.map((item) => (
+                      <div 
+                        key={item.id} 
+                        className="grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-gray-200 hover:bg-blue-50/50 text-sm items-center"
+                      >
+                        <div className="col-span-3 font-medium text-denz-text-primary">{item.name}</div>
+                        <div className="col-span-5 text-denz-text-secondary line-clamp-1">{item.description}</div>
+                        <div className="col-span-2 text-denz-text-secondary">{item.serialNumber || "-"}</div>
+                        <div className="col-span-2 text-right">
+                          <Badge variant="outline" className={`${getStatusColor(item.status)} text-xs px-2 py-0.5`}>
+                            {getStatusLabel(item.status)}
+                          </Badge>
                         </div>
-                      )}
-                      
-                      {item.purchaseDate && (
-                        <div className="flex items-center text-xs text-denz-text-secondary mb-3">
-                          <span>Inköpsdatum: {item.purchaseDate}</span>
-                        </div>
-                      )}
-                      
-                      <div className="flex justify-end gap-2 mt-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-denz-text-secondary hover:text-denz-blue hover:bg-denz-dark"
-                        >
-                          <Pencil size={14} className="mr-1" />
-                          Redigera
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-denz-text-secondary hover:text-denz-danger hover:bg-denz-dark"
-                        >
-                          <Trash2 size={14} className="mr-1" />
-                          Ta bort
-                        </Button>
                       </div>
-                    </div>
-                  </Card>
-                ))
+                    ))}
+                  </div>
+                </div>
               ) : (
-                <div className="col-span-full py-8 text-center text-denz-text-secondary">
-                  Inga material hittades i denna kategori
+                <div className="flex-1 flex flex-col items-center justify-center p-6 bg-gray-50 rounded-md border border-gray-200">
+                  <Package className="h-8 w-8 text-denz-text-secondary mb-2" />
+                  <h3 className="text-base font-medium text-denz-text-primary">Inga material hittades</h3>
+                  <p className="text-sm text-denz-text-secondary">
+                    Det finns inga material i denna kategori.
+                  </p>
                 </div>
               )}
-            </div>
-          </TabsContent>
-        </>
+            </Card>
+          </div>
+          
+          <div className="flex gap-3 mt-4">
+            <Button
+              onClick={() => handleEditCategory(selectedCategory)}
+              variant="outline"
+              className="text-sm border-gray-200"
+            >
+              <Pencil size={15} className="mr-1.5" />
+              Redigera kategori
+            </Button>
+            <Button
+              onClick={() => handleDeleteCategory(selectedCategory)}
+              variant="outline"
+              className="text-sm border-gray-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200"
+            >
+              <Trash2 size={15} className="mr-1.5" />
+              Ta bort kategori
+            </Button>
+          </div>
+        </div>
       )}
       
       {/* Add Category Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="bg-denz-card-bg border-denz-gray-700/30">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-denz-text-primary">Lägg till kategori</DialogTitle>
             <DialogDescription className="text-denz-text-secondary">
-              Fyll i informationen nedan för att skapa en ny materialkategori.
+              Skapa en ny kategori för material.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-denz-text-primary" htmlFor="categoryName">
-                Kategorinamn *
-              </label>
-              <Input 
-                id="categoryName"
+          <div className="grid gap-4 py-2">
+            <div>
+              <Label htmlFor="name" className="text-sm font-medium text-denz-text-secondary mb-1.5 block">
+                Kategorinamn
+              </Label>
+              <Input
+                id="name"
+                type="text"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                placeholder="Ange namn på kategorin"
-                className="bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
+                placeholder="T.ex. Verktyg, Elektronik, etc."
+                className="col-span-3 teamgantt-search"
               />
             </div>
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-denz-text-primary" htmlFor="categoryDescription">
+            <div>
+              <Label htmlFor="description" className="text-sm font-medium text-denz-text-secondary mb-1.5 block">
                 Beskrivning
-              </label>
-              <Input 
-                id="categoryDescription"
+              </Label>
+              <Textarea
+                id="description"
                 value={newCategory.description}
                 onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
-                placeholder="Ange en valfri beskrivning"
-                className="bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
+                placeholder="Kort beskrivning av kategorin"
+                className="col-span-3 min-h-[100px] teamgantt-search"
               />
             </div>
           </div>
           
-          <DialogFooter>
+          <DialogFooter className="flex gap-3">
             <Button 
               variant="outline" 
               onClick={() => setIsAddDialogOpen(false)}
-              className="border-denz-gray-700/30 text-denz-text-primary hover:bg-denz-dark"
+              className="flex-1 text-sm"
             >
               Avbryt
             </Button>
             <Button 
+              type="submit" 
               onClick={handleSaveNewCategory}
-              className="bg-denz-blue hover:bg-denz-blue/90"
+              className="flex-1 bg-denz-blue hover:bg-denz-dark-blue text-sm"
             >
-              Spara
+              Lägg till
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -616,94 +504,95 @@ const Administration = () => {
       
       {/* Edit Category Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-denz-card-bg border-denz-gray-700/30">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-denz-text-primary">Redigera kategori</DialogTitle>
             <DialogDescription className="text-denz-text-secondary">
-              Uppdatera information om kategorin.
+              Uppdatera information för kategorin.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-denz-text-primary" htmlFor="editCategoryName">
-                Kategorinamn *
-              </label>
-              <Input 
-                id="editCategoryName"
+          <div className="grid gap-4 py-2">
+            <div>
+              <Label htmlFor="edit-name" className="text-sm font-medium text-denz-text-secondary mb-1.5 block">
+                Kategorinamn
+              </Label>
+              <Input
+                id="edit-name"
+                type="text"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({...newCategory, name: e.target.value})}
-                className="bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
+                className="col-span-3 teamgantt-search"
               />
             </div>
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-denz-text-primary" htmlFor="editCategoryDescription">
+            <div>
+              <Label htmlFor="edit-description" className="text-sm font-medium text-denz-text-secondary mb-1.5 block">
                 Beskrivning
-              </label>
-              <Input 
-                id="editCategoryDescription"
+              </Label>
+              <Textarea
+                id="edit-description"
                 value={newCategory.description}
                 onChange={(e) => setNewCategory({...newCategory, description: e.target.value})}
-                className="bg-denz-darker border-denz-gray-700/30 text-denz-text-primary"
+                className="col-span-3 min-h-[100px] teamgantt-search"
               />
             </div>
           </div>
           
-          <DialogFooter>
+          <DialogFooter className="flex gap-3">
             <Button 
               variant="outline" 
               onClick={() => setIsEditDialogOpen(false)}
-              className="border-denz-gray-700/30 text-denz-text-primary hover:bg-denz-dark"
+              className="flex-1 text-sm"
             >
               Avbryt
             </Button>
             <Button 
+              type="submit" 
               onClick={handleUpdateCategory}
-              className="bg-denz-blue hover:bg-denz-blue/90"
+              className="flex-1 bg-denz-blue hover:bg-denz-dark-blue text-sm"
             >
-              Spara
+              Spara ändringar
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
       
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Category Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="bg-denz-card-bg border-denz-gray-700/30">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-denz-text-primary">Ta bort kategori</DialogTitle>
             <DialogDescription className="text-denz-text-secondary">
-              Är du säker på att du vill ta bort denna kategori?
+              Är du säker på att du vill ta bort denna kategori? Denna åtgärd kan inte ångras.
             </DialogDescription>
           </DialogHeader>
           
           {currentCategory && (
-            <div className="py-4">
-              <p className="text-denz-text-primary mb-2">
-                <span className="font-medium">Kategori:</span> {currentCategory.name}
-              </p>
-              {currentCategory.itemCount > 0 && (
-                <div className="bg-denz-warning/10 border border-denz-warning/30 rounded-md p-3 text-sm text-denz-warning">
-                  <p className="font-medium">OBS! Denna åtgärd kan påverka kopplat material.</p>
-                  <p>Det finns {currentCategory.itemCount} material kopplat till denna kategori.</p>
-                </div>
-              )}
+            <div className="bg-rose-50 border border-rose-200 rounded-md p-4 mb-4">
+              <h4 className="text-rose-600 font-medium mb-1">{currentCategory.name}</h4>
+              <p className="text-sm text-denz-text-secondary">{currentCategory.description}</p>
+              <div className="mt-2 flex items-center">
+                <span className="text-xs text-denz-text-secondary mr-2">Material i kategorin:</span>
+                <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 text-xs">
+                  {currentCategory.itemCount} st
+                </Badge>
+              </div>
             </div>
           )}
           
-          <DialogFooter>
+          <DialogFooter className="flex gap-3">
             <Button 
               variant="outline" 
               onClick={() => setIsDeleteDialogOpen(false)}
-              className="border-denz-gray-700/30 text-denz-text-primary hover:bg-denz-dark"
+              className="flex-1 text-sm"
             >
               Avbryt
             </Button>
             <Button 
-              variant="destructive" 
+              variant="destructive"
               onClick={handleConfirmDelete}
-              className="bg-denz-danger hover:bg-denz-danger/90"
+              className="flex-1 text-sm"
             >
               Ta bort
             </Button>

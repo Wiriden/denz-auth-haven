@@ -1,18 +1,17 @@
-
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
-  Package2, 
-  Users, 
-  Box, 
-  Settings, 
-  ChevronRight, 
-  ChevronLeft,
-  LayoutDashboard,
-  Shield,
-  Folder
+import {
+    Box,
+    ChevronLeft,
+    ChevronRight,
+    Folder,
+    LayoutDashboard,
+    Package2,
+    PieChart,
+    Settings,
+    Users
 } from "lucide-react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type SidebarItem = {
   title: string;
@@ -36,7 +35,7 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 const Sidebar = () => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [hovering, setHovering] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,25 +50,30 @@ const Sidebar = () => {
     >
       <div 
         className={cn(
-          "bg-denz-darker h-full transition-all duration-300 overflow-hidden flex flex-col",
+          "bg-white h-full transition-all duration-300 overflow-hidden flex flex-col border-r border-denz-border",
           isExpanded ? "w-64" : "w-16"
         )}
       >
         {/* Toggle button */}
         <button 
           className={cn(
-            "absolute top-3 -right-4 z-10 bg-denz-dark p-1 rounded-full text-denz-text-secondary border border-denz-gray-700/30",
+            "absolute top-4 -right-3 z-10 bg-white p-1 rounded-full text-denz-text-secondary border border-denz-border shadow-sm hover:bg-denz-gray-50",
             !isExpanded && "rotate-180"
           )}
           onClick={() => setExpanded(!expanded)}
         >
-          {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          {isExpanded ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
         </button>
         
         {/* Sidebar header */}
-        <div className="h-16 flex items-center px-4 border-b border-denz-gray-700/30">
+        <div className="h-16 flex items-center px-4 border-b border-denz-border">
           {isExpanded ? (
-            <span className="text-lg font-semibold text-denz-text-primary">Denz</span>
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-md bg-denz-blue flex items-center justify-center text-white font-bold">
+                D
+              </div>
+              <span className="ml-3 text-base font-medium text-denz-text-primary">Assetmaster</span>
+            </div>
           ) : (
             <div className="w-8 h-8 rounded-md bg-denz-blue flex items-center justify-center text-white font-bold">
               D
@@ -78,47 +82,68 @@ const Sidebar = () => {
         </div>
         
         {/* Sidebar content */}
-        <div className="py-4 flex flex-col flex-1">
+        <div className="py-3 flex flex-col flex-1 overflow-y-auto">
           {sidebarItems.map((item) => (
             <div key={item.title} className="mb-1">
-              <div 
-                className="flex items-center px-4 py-3 text-denz-text-primary cursor-pointer hover:bg-denz-dark"
-                onClick={() => navigate(item.path)}
-              >
-                <item.icon size={20} className="text-denz-text-secondary" />
-                {isExpanded && (
-                  <span className="ml-4 font-medium">{item.title}</span>
-                )}
-              </div>
+              {isExpanded ? (
+                <div className="px-4 py-2">
+                  <div className="text-xs font-medium uppercase tracking-wider text-denz-text-secondary">
+                    Navigation
+                  </div>
+                </div>
+              ) : null}
               
               {/* Sub-items */}
-              {isExpanded && item.subItems?.map((subItem) => {
+              {item.subItems?.map((subItem) => {
                 const isActive = location.pathname === subItem.path;
                 
                 // Choose icon based on the path
-                let SubItemIcon = LayoutDashboard;
+                let SubItemIcon = PieChart;
                 if (subItem.path.includes('anstallda')) SubItemIcon = Users;
                 if (subItem.path.includes('utrustning')) SubItemIcon = Box;
                 if (subItem.path.includes('administration')) SubItemIcon = Folder;
+                if (subItem.path.includes('oversikt')) SubItemIcon = LayoutDashboard;
                 
                 return (
                   <div
                     key={subItem.title}
                     className={cn(
-                      "flex items-center pl-12 pr-4 py-2 cursor-pointer",
+                      "flex items-center px-4 py-2 cursor-pointer transition-colors duration-150 mx-2 rounded-md",
                       isActive 
-                        ? "bg-denz-blue/10 text-denz-blue" 
-                        : "text-denz-text-secondary hover:bg-denz-dark hover:text-denz-text-primary"
+                        ? "bg-denz-blue/10 text-denz-blue font-medium" 
+                        : "text-denz-text-secondary hover:bg-denz-gray-100 hover:text-denz-text-primary"
                     )}
                     onClick={() => navigate(subItem.path)}
                   >
-                    <SubItemIcon size={16} className="mr-2" />
-                    <span className="font-light text-sm">{subItem.title}</span>
+                    <SubItemIcon size={isExpanded ? 16 : 20} className={cn(!isExpanded && "mx-auto")} />
+                    {isExpanded && (
+                      <span className="ml-3 text-sm">{subItem.title}</span>
+                    )}
                   </div>
                 );
               })}
             </div>
           ))}
+        </div>
+        
+        {/* Sidebar footer */}
+        <div className="px-4 py-3 border-t border-denz-border">
+          {isExpanded ? (
+            <div 
+              className="flex items-center text-denz-text-secondary hover:text-denz-text-primary cursor-pointer px-2 py-2 rounded-md hover:bg-denz-gray-100 transition-colors duration-150"
+              onClick={() => navigate('/dashboard/administration')}
+            >
+              <Settings size={16} />
+              <span className="ml-3 text-sm">Inställningar</span>
+            </div>
+          ) : (
+            <div 
+              className="flex justify-center text-denz-text-secondary hover:text-denz-text-primary cursor-pointer p-2 rounded-md hover:bg-denz-gray-100 transition-colors duration-150"
+              onClick={() => navigate('/dashboard/administration')}
+            >
+              <Settings size={20} />
+            </div>
+          )}
         </div>
       </div>
     </div>

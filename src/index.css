@@ -1,37 +1,36 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 216 11% 12%; /* #1B1F24 */
-    --foreground: 210 14% 93%; /* #E9ECEF */
+    --background: 210 20% 98%; /* #F8F9FA - ljusare bakgrund */
+    --foreground: 213 22% 25%; /* #354052 - mörkare text */
     
-    --card: 217 11% 19%; /* #2A2F36 */
-    --card-foreground: 210 14% 93%; /* #E9ECEF */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 213 22% 25%; /* #354052 */
     
-    --popover: 217 11% 19%; /* #2A2F36 */
-    --popover-foreground: 210 14% 93%; /* #E9ECEF */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 213 22% 25%; /* #354052 */
     
-    --primary: 228 89% 63%; /* #4C6EF5 */
-    --primary-foreground: 210 14% 93%; /* #E9ECEF */
+    --primary: 219 79% 66%; /* #4D8AF0 - TeamGantt-blå */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
     
-    --secondary: 217 11% 19%; /* #2A2F36 */
-    --secondary-foreground: 210 14% 93%; /* #E9ECEF */
+    --secondary: 210 14% 97%; /* #F5F7FA - ljus grå */
+    --secondary-foreground: 213 22% 25%; /* #354052 */
     
-    --muted: 217 11% 19%; /* #2A2F36 */
-    --muted-foreground: 215 5% 57%; /* #8A8F98 */
+    --muted: 210 14% 97%; /* #F5F7FA */
+    --muted-foreground: 216 10% 58%; /* #8A94A6 - dämpad text */
     
-    --accent: 217 11% 19%; /* #2A2F36 */
-    --accent-foreground: 210 14% 93%; /* #E9ECEF */
+    --accent: 198 81% 93%; /* #E1F5FE - subtil blå accent */
+    --accent-foreground: 213 22% 25%; /* #354052 */
     
-    --destructive: 354 78% 59%; /* #E63946 */
-    --destructive-foreground: 210 14% 93%; /* #E9ECEF */
+    --destructive: 0 84% 64%; /* #F36D6D - mjuk röd */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
     
-    --border: 217 9% 25%; /* #3B4047 */
-    --input: 217 9% 25%; /* #3B4047 */
-    --ring: 228 89% 63%; /* #4C6EF5 */
+    --border: 220 13% 90%; /* #E6EAF0 - subtil gränsfärg */
+    --input: 220 13% 90%; /* #E6EAF0 */
+    --ring: 219 79% 66%; /* #4D8AF0 */
     
     --radius: 0.5rem;
   }
@@ -43,55 +42,50 @@
   }
 
   body {
-    @apply bg-denz-darkest text-denz-text-primary antialiased;
+    @apply bg-background text-foreground antialiased;
     line-height: 1.5;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   
   h1 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-semibold text-denz-text-primary;
     line-height: 1.4;
+    letter-spacing: -0.01em;
   }
   
   h2 {
-    @apply text-xl font-semibold;
+    @apply text-xl font-semibold text-denz-text-primary;
     line-height: 1.4;
+    letter-spacing: -0.01em;
   }
   
   h3 {
-    @apply text-lg font-medium;
+    @apply text-lg font-medium text-denz-text-primary;
     line-height: 1.4;
   }
   
   h4 {
-    @apply text-base font-semibold;
+    @apply text-base font-semibold text-denz-text-primary;
     line-height: 1.4;
   }
 }
 
 @layer utilities {
   .glass-card {
-    @apply bg-denz-card-bg/75 backdrop-blur-sm border border-white/10 shadow-card;
+    @apply bg-white rounded-lg border-transparent shadow-sm;
   }
   
   .btn-shine {
-    position: relative;
-    overflow: hidden;
+    @apply shadow-sm transition-all duration-200;
   }
   
-  .btn-shine::after {
-    @apply absolute top-0 -left-[100%] w-full h-full bg-white/10;
-    content: "";
-    transform: skewX(-15deg);
-    transition: all 0.5s ease;
-  }
-  
-  .btn-shine:hover::after {
-    left: 100%;
+  .btn-shine:hover {
+    @apply shadow-md brightness-105;
   }
   
   .input-glow:focus {
-    @apply border-denz-blue ring-1 ring-denz-blue/50;
-    box-shadow: 0 0 5px theme('colors.denz.blue');
+    @apply border-denz-blue/60 ring-1 ring-denz-blue/25;
+    box-shadow: 0 0 0 2px rgba(77, 138, 240, 0.1);
     transition: all 0.2s ease;
   }
   
@@ -104,39 +98,75 @@
   }
 
   .status-success {
-    @apply text-denz-success border-denz-success/30 bg-denz-success/10;
+    @apply text-emerald-600 border-emerald-200 bg-emerald-50;
   }
 
   .status-warning {
-    @apply text-denz-warning border-denz-warning/30 bg-denz-warning/10;
+    @apply text-amber-600 border-amber-200 bg-amber-50;
   }
 
   .status-danger {
-    @apply text-denz-danger border-denz-danger/30 bg-denz-danger/10;
+    @apply text-rose-600 border-rose-200 bg-rose-50;
   }
 
   .status-info {
-    @apply text-denz-info border-denz-info/30 bg-denz-info/10;
+    @apply text-sky-600 border-sky-200 bg-sky-50;
   }
 
   .card-gradient-blue {
-    @apply bg-gradient-to-br from-denz-card-bg to-denz-blue/5 border border-denz-blue/20;
+    @apply bg-white border border-sky-100 shadow-sm;
   }
 
   .card-gradient-green {
-    @apply bg-gradient-to-br from-denz-card-bg to-denz-success/5 border border-denz-success/20;
+    @apply bg-white border border-emerald-100 shadow-sm;
   }
 
   .card-gradient-purple {
-    @apply bg-gradient-to-br from-denz-card-bg to-denz-purple/5 border border-denz-purple/20;
+    @apply bg-white border border-violet-100 shadow-sm;
   }
 
   .card-gradient-amber {
-    @apply bg-gradient-to-br from-denz-card-bg to-denz-warning/5 border border-denz-warning/20;
+    @apply bg-white border border-amber-100 shadow-sm;
   }
 
   .card-gradient-teal {
-    @apply bg-gradient-to-br from-denz-card-bg to-denz-teal/5 border border-denz-teal/20;
+    @apply bg-white border border-teal-100 shadow-sm;
+  }
+  
+  .teamgantt-table {
+    @apply w-full rounded-md overflow-hidden border border-gray-200;
+  }
+  
+  .teamgantt-table-header {
+    @apply bg-gray-50 text-sm font-medium text-gray-600 tracking-wide;
+  }
+  
+  .teamgantt-table-row {
+    @apply border-b border-gray-200 hover:bg-blue-50/50 transition-colors duration-150;
+  }
+  
+  .teamgantt-table-cell {
+    @apply px-4 py-3 text-sm;
+  }
+  
+  .teamgantt-badge {
+    @apply inline-flex items-center justify-center px-2.5 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .teamgantt-button {
+    @apply rounded-md px-4 py-2 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm;
+  }
+  
+  .teamgantt-button-primary {
+    @apply bg-denz-blue text-white hover:bg-denz-blue/90;
+  }
+  
+  .teamgantt-button-secondary {
+    @apply bg-white text-gray-700 border border-gray-200 hover:bg-gray-50;
+  }
+  
+  .teamgantt-search {
+    @apply px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm focus:ring-2 focus:ring-denz-blue/20 focus:border-denz-blue transition-all duration-200;
   }
 }
 

@@ -1,44 +1,58 @@
-
-import React from "react";
-import { UserCircle, Bell, Settings } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// In a real app, this would come from auth context
-const mockUser = {
-  name: "Johan Andersson",
-  role: "Admin"
-};
+import { useUser } from "@/context/UserContext";
+import { useAuth } from "@/hooks/useAuth";
+import { Bell, LogOut, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Topbar = () => {
+  const { user } = useUser();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Du har loggats ut");
+    } catch (error: any) {
+      toast.error(error.message || "Utloggning misslyckades");
+    }
+  };
+  
   return (
-    <div className="h-16 bg-denz-dark border-b border-denz-gray-700/30 px-6 flex items-center justify-between">
-      <div className="text-xl font-semibold text-denz-text-primary">
-        Denz Assetmaster
+    <header className="border-b border-border h-16 px-4 md:px-6 flex items-center justify-between bg-white">
+      {/* Logo och sidtitel */}
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 rounded-md bg-denz-blue flex items-center justify-center text-white font-semibold text-lg">
+          D
+        </div>
+        <span className="font-medium hidden md:inline">Denz Assetmaster</span>
       </div>
       
-      <div className="flex items-center gap-4">
+      {/* Användarinfo och åtgärder */}
+      <div className="flex items-center gap-2 md:gap-4">
         <Button variant="ghost" size="icon" className="text-denz-text-secondary hover:text-denz-text-primary">
-          <Bell size={20} />
+          <Bell className="h-5 w-5" />
         </Button>
         
         <Button variant="ghost" size="icon" className="text-denz-text-secondary hover:text-denz-text-primary">
-          <Settings size={20} />
+          <Settings className="h-5 w-5" />
         </Button>
+        
+        <div className="h-8 w-px bg-border mx-1 md:mx-2"></div>
         
         <div className="flex items-center gap-3">
-          <div className="text-right">
-            <div className="text-sm font-medium text-denz-text-primary">{mockUser.name}</div>
-            <Badge variant="outline" className="bg-denz-blue/10 border-denz-blue/30 text-denz-blue text-xs">
-              {mockUser.role}
-            </Badge>
+          <div className="text-right hidden md:block">
+            <div className="text-sm font-medium">{user?.name || 'Anonym användare'}</div>
+            <div className="text-xs text-denz-text-secondary">{user?.role || 'Okänd roll'}</div>
           </div>
-          <div className="flex items-center justify-center bg-denz-darker h-10 w-10 rounded-full border border-denz-gray-700/50">
-            <UserCircle className="text-denz-gray-500" size={24} />
-          </div>
+          
+          <Button variant="ghost" size="icon" onClick={handleLogout} title="Logga ut">
+            <LogOut className="h-5 w-5" />
+          </Button>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
