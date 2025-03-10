@@ -207,7 +207,6 @@ const Anstallda = () => {
                 <th className="px-6 py-3 text-slate-600 font-medium">Namn</th>
                 <th className="px-6 py-3 text-slate-600 font-medium">Roll</th>
                 <th className="px-6 py-3 text-slate-600 font-medium">Avdelning</th>
-                <th className="px-6 py-3 text-slate-600 font-medium">Kontakt</th>
                 <th className="px-6 py-3 text-slate-600 font-medium text-center">Certifikat</th>
                 <th className="px-6 py-3 text-slate-600 font-medium">Status</th>
                 <th className="px-6 py-3 text-slate-600 font-medium">Åtgärder</th>
@@ -219,7 +218,6 @@ const Anstallda = () => {
                   <td className="px-6 py-4 font-medium text-slate-800">{employee.name}</td>
                   <td className="px-6 py-4 text-slate-600">{employee.role}</td>
                   <td className="px-6 py-4 text-slate-600">{employee.department}</td>
-                  <td className="px-6 py-4 text-slate-600">{employee.contact}</td>
                   <td className="px-6 py-4 text-center">
                     {employee.certificates.length > 0 ? (
                       <div className="flex items-center justify-center gap-1">

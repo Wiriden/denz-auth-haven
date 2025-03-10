@@ -9,7 +9,8 @@ import {
   Settings, 
   ChevronRight, 
   ChevronLeft,
-  LayoutDashboard
+  LayoutDashboard,
+  Shield
 } from "lucide-react";
 
 type SidebarItem = {
@@ -27,7 +28,7 @@ const sidebarItems: SidebarItem[] = [
     subItems: [
       { title: "Översikt", path: "/dashboard/oversikt" },
       { title: "Anställda", path: "/dashboard/anstallda" },
-      { title: "Utrustning", path: "/dashboard/utrustning" },
+      { title: "Verktyg", path: "/dashboard/utrustning" },
       { title: "Administration", path: "/dashboard/administration" },
     ],
   },
