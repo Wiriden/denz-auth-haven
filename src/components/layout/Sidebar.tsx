@@ -49,14 +49,14 @@ const Sidebar = () => {
     >
       <div 
         className={cn(
-          "bg-[#212054] h-full transition-all duration-300 overflow-hidden flex flex-col",
+          "bg-[#1E293B] h-full transition-all duration-300 overflow-hidden flex flex-col",
           isExpanded ? "w-60" : "w-16"
         )}
       >
         {/* Toggle button */}
         <button 
           className={cn(
-            "absolute top-3 -right-4 z-10 bg-[#212054] p-1 rounded-full text-white",
+            "absolute top-3 -right-4 z-10 bg-[#1E293B] p-1 rounded-full text-white",
             !isExpanded && "rotate-180"
           )}
           onClick={() => setExpanded(!expanded)}
@@ -69,10 +69,10 @@ const Sidebar = () => {
           {sidebarItems.map((item) => (
             <div key={item.title} className="mb-1">
               <div 
-                className="flex items-center px-4 py-3 text-white cursor-pointer hover:bg-indigo-700"
+                className="flex items-center px-4 py-3 text-white cursor-pointer hover:bg-[#2D3748]"
                 onClick={() => navigate(item.path)}
               >
-                <item.icon size={24} className="text-white" />
+                <item.icon size={24} className="text-[#3B82F6]" />
                 {isExpanded && (
                   <span className="ml-4 font-medium">{item.title}</span>
                 )}
@@ -82,7 +82,7 @@ const Sidebar = () => {
               {isExpanded && item.subItems?.map((subItem) => (
                 <div
                   key={subItem.title}
-                  className="flex items-center pl-12 pr-4 py-2 text-white cursor-pointer hover:bg-indigo-700"
+                  className="flex items-center pl-12 pr-4 py-2 text-gray-300 cursor-pointer hover:bg-[#2D3748] hover:text-white"
                   onClick={() => navigate(subItem.path)}
                 >
                   <span className="font-light text-sm">{subItem.title}</span>
