@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  Users, Car, Package, AlertTriangle, Clock, Calendar,
+  Users, Hammer, Shield, AlertTriangle, Clock, Calendar,
   ChevronRight, Award, Bell, Filter, Search, BarChart4
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -25,10 +25,10 @@ type Certificate = {
   daysLeft: number;
 };
 
-type Vehicle = {
+type Tool = {
   name: string;
-  regNumber: string;
-  serviceEndDate: string;
+  serialNumber: string;
+  maintenanceDate: string;
   hoursLeft: number;
 };
 
@@ -41,8 +41,8 @@ const activities: ActivityItem[] = [
     priority: "low"
   },
   {
-    title: "Fordon incheckad",
-    description: "VW Transporter ABC123 incheckad av Johan Berg",
+    title: "Verktyg incheckad",
+    description: "Borrmaskin SN12345 incheckad av Johan Berg",
     timestamp: "15:30",
     date: "igår",
     priority: "low"
@@ -64,9 +64,9 @@ const certificates: Certificate[] = [
   { name: "Arbetsmiljö", employee: "Sofia Björk", expiryDate: "2024-03-20", daysLeft: 125 }
 ];
 
-const vehicles: Vehicle[] = [
-  { name: "VW Transporter", regNumber: "ABC123", serviceEndDate: "2023-11-25", hoursLeft: 24 },
-  { name: "Volvo FH16", regNumber: "XYZ789", serviceEndDate: "2023-11-27", hoursLeft: 72 }
+const tools: Tool[] = [
+  { name: "Borrmaskin", serialNumber: "SN12345", maintenanceDate: "2023-11-25", hoursLeft: 24 },
+  { name: "Slipmaskin", serialNumber: "SN67890", maintenanceDate: "2023-11-27", hoursLeft: 72 }
 ];
 
 const getPriorityColor = (priority: string) => {
@@ -181,34 +181,34 @@ const Oversikt = () => {
         <Card className="shadow-card hover:shadow-card-hover transition-shadow bg-denz-dark border-denz-gray-700 overflow-hidden">
           <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-denz-gray-700 card-gradient-green">
             <div className="space-y-0.5">
-              <CardTitle className="text-white">Fordon</CardTitle>
-              <p className="text-sm text-denz-gray-300">Servicestatus</p>
+              <CardTitle className="text-white">Verktyg</CardTitle>
+              <p className="text-sm text-denz-gray-300">Underhållstatus</p>
             </div>
             <div className="bg-denz-success p-2 rounded-full shadow-glow">
-              <Car size={20} className="text-white" />
+              <Hammer size={20} className="text-white" />
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-denz-gray-300 text-sm font-medium">Under service</span>
+                <span className="text-denz-gray-300 text-sm font-medium">Under underhåll</span>
                 <Badge variant="outline" className="bg-denz-success/20 text-denz-success border-denz-success/40">2</Badge>
               </div>
               <div className="space-y-3 mt-3">
-                {vehicles.map((vehicle, index) => (
+                {tools.map((tool, index) => (
                   <div key={index} className="flex justify-between items-center p-2 bg-black/20 rounded-md border border-denz-gray-700">
                     <div>
-                      <div className="font-medium text-white">{vehicle.name}</div>
-                      <div className="text-xs text-denz-gray-400">{vehicle.regNumber}</div>
+                      <div className="font-medium text-white">{tool.name}</div>
+                      <div className="text-xs text-denz-gray-400">{tool.serialNumber}</div>
                     </div>
-                    {getTimeLeftIndicator(vehicle.hoursLeft)}
+                    {getTimeLeftIndicator(tool.hoursLeft)}
                   </div>
                 ))}
               </div>
             </div>
             <div className="pt-2 border-t border-denz-gray-700">
               <Button variant="outline" className="w-full text-denz-success border-denz-success/30 hover:bg-denz-success/10 hover:text-denz-success">
-                Schemalägg service
+                Schemalägg underhåll
               </Button>
             </div>
           </CardContent>
@@ -217,17 +217,17 @@ const Oversikt = () => {
         <Card className="shadow-card hover:shadow-card-hover transition-shadow bg-denz-dark border-denz-gray-700 overflow-hidden">
           <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-denz-gray-700 card-gradient-purple">
             <div className="space-y-0.5">
-              <CardTitle className="text-white">Tillgångar</CardTitle>
+              <CardTitle className="text-white">Skyddsutrustning</CardTitle>
               <p className="text-sm text-denz-gray-300">Användningsstatus</p>
             </div>
             <div className="bg-denz-purple p-2 rounded-full shadow-glow">
-              <Package size={20} className="text-white" />
+              <Shield size={20} className="text-white" />
             </div>
           </CardHeader>
           <CardContent className="p-6 space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-denz-gray-300 text-sm font-medium">Total tillgångar</span>
+                <span className="text-denz-gray-300 text-sm font-medium">Total skyddsutrustning</span>
                 <span className="text-2xl font-bold text-denz-purple">23</span>
               </div>
               
@@ -302,7 +302,7 @@ const Oversikt = () => {
                         Förnya
                       </Button>
                     )}
-                    {activity.title.includes("Fordon") && (
+                    {activity.title.includes("Verktyg") && (
                       <Button size="sm" className="bg-denz-success hover:bg-denz-success/90 h-7 rounded-md text-xs px-2">
                         Detaljer
                       </Button>

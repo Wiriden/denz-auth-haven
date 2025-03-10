@@ -25,7 +25,11 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-[#111827]">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-12">
-          <Logo />
+          <div className="flex flex-col">
+            <span className="text-2xl font-bold text-white">Denz</span>
+            <span className="text-sm text-gray-400">Assetmaster</span>
+          </div>
+          
           <Button 
             onClick={handleLogout}
             variant="outline" 
