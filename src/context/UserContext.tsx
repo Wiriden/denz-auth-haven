@@ -1,22 +1,23 @@
+
 import { useAuth } from '@/hooks/useAuth';
 import { type Profile } from '@/lib/api';
 import { createContext, ReactNode, useContext } from 'react';
 
-// Typ för UserContext
+// Type for UserContext
 interface UserContextType {
   user: Profile | null;
   isAdmin: boolean;
   loading: boolean;
 }
 
-// Skapa context
+// Create context
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Provider-komponent
+// Provider component
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
   
-  // Beräkna om användaren är admin
+  // Calculate if user is admin
   const isAdmin = user?.role === 'admin';
   
   return (
@@ -26,7 +27,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Hook för att använda context
+// Hook for using context
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
