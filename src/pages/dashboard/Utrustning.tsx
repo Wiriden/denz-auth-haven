@@ -25,15 +25,15 @@ const toolsData: Tool[] = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case "available":
-      return "bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20";
+      return "bg-emerald-50 text-emerald-600 border-emerald-200";
     case "checked-out":
-      return "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20";
+      return "bg-sky-50 text-sky-600 border-sky-200";
     case "maintenance":
-      return "bg-[#3B82F6]/10 text-[#3B82F6] border-[#3B82F6]/20";
+      return "bg-amber-50 text-amber-600 border-amber-200";
     case "lost":
-      return "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20";
+      return "bg-rose-50 text-rose-600 border-rose-200";
     default:
-      return "bg-[#64748B]/10 text-[#64748B] border-[#64748B]/20";
+      return "bg-gray-50 text-gray-600 border-gray-200";
   }
 };
 
@@ -55,107 +55,122 @@ const getStatusText = (status: string) => {
 const Utrustning = () => {
   return (
     <div className="animate-fadeIn">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <Hammer size={24} className="text-[#3B82F6] mr-2" />
-          <h1 className="text-2xl font-bold text-white">Material</h1>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-xl font-medium text-denz-text-primary mb-1 flex items-center">
+            <Hammer size={20} className="text-denz-blue mr-2" />
+            Material
+          </h1>
+          <p className="text-sm text-denz-text-secondary">
+            Hantera material och utrustning
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="flex gap-2 border-[#334155] text-white hover:bg-[#1E293B]">
-            <CheckCircle size={16} />
+          <Button variant="outline" className="text-sm border-gray-200">
+            <CheckCircle size={16} className="mr-1.5" />
             Checka in
           </Button>
-          <Button variant="outline" className="flex gap-2 border-[#334155] text-white hover:bg-[#1E293B]">
-            <XCircle size={16} />
+          <Button variant="outline" className="text-sm border-gray-200">
+            <XCircle size={16} className="mr-1.5" />
             Checka ut
           </Button>
-          <Button className="bg-[#3B82F6] hover:bg-[#3B82F6]/90">
-            <Plus size={16} className="mr-1" />
+          <Button className="bg-denz-blue hover:bg-denz-dark-blue text-sm">
+            <Plus size={16} className="mr-1.5" />
             Lägg till material
           </Button>
         </div>
       </div>
       
-      <div className="flex gap-4 mb-6">
-        <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#64748B]" size={18} />
-          <Input className="pl-10 bg-[#111827] border-[#334155] text-white placeholder:text-[#64748B]" placeholder="Sök efter material" />
+      <div className="flex gap-3 mb-5 items-center">
+        <div className="relative flex-grow max-w-md">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-denz-text-secondary" />
+          <Input
+            type="text"
+            placeholder="Sök efter material..."
+            className="pl-9 py-2 h-9 bg-white text-sm teamgantt-search"
+          />
         </div>
-        <Button variant="outline" className="flex gap-2 border-[#334155] text-[#94A3B8] hover:bg-[#1E293B]">
-          <Filter size={18} />
+        <Button variant="outline" size="sm" className="h-9 border-gray-200 text-denz-text-secondary">
+          <Filter size={16} className="mr-1.5" />
           Filter
         </Button>
       </div>
       
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <Card className="p-4 flex items-center justify-between bg-[#111827] border-[#334155]">
-          <div>
-            <p className="text-sm text-[#94A3B8]">Totalt material</p>
-            <p className="text-2xl font-semibold text-white">23</p>
+        <Card className="p-4 bg-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-denz-text-secondary">Totalt material</p>
+              <p className="text-2xl font-semibold text-denz-text-primary">23</p>
+            </div>
+            <Hammer size={24} className="text-denz-blue/20" />
           </div>
-          <Hammer size={24} className="text-[#64748B]" />
         </Card>
-        <Card className="p-4 flex items-center justify-between bg-[#111827] border-[#334155]">
-          <div>
-            <p className="text-sm text-[#94A3B8]">Tillgängliga</p>
-            <p className="text-2xl font-semibold text-[#16A34A]">5</p>
+        <Card className="p-4 bg-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-denz-text-secondary">Tillgängliga</p>
+              <p className="text-2xl font-semibold text-emerald-600">5</p>
+            </div>
+            <CheckCircle size={24} className="text-emerald-600/20" />
           </div>
-          <CheckCircle size={24} className="text-[#16A34A]" />
         </Card>
-        <Card className="p-4 flex items-center justify-between bg-[#111827] border-[#334155]">
-          <div>
-            <p className="text-sm text-[#94A3B8]">Utcheckade</p>
-            <p className="text-2xl font-semibold text-[#F59E0B]">18</p>
+        <Card className="p-4 bg-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-denz-text-secondary">Utcheckade</p>
+              <p className="text-2xl font-semibold text-amber-600">18</p>
+            </div>
+            <XCircle size={24} className="text-amber-600/20" />
           </div>
-          <XCircle size={24} className="text-[#F59E0B]" />
         </Card>
-        <Card className="p-4 flex items-center justify-between bg-[#111827] border-[#334155]">
-          <div>
-            <p className="text-sm text-[#94A3B8]">Under underhåll</p>
-            <p className="text-2xl font-semibold text-[#3B82F6]">0</p>
-          </div>
-          <div className="rounded-full bg-[#0F172A] p-1">
-            <Hammer size={22} className="text-[#3B82F6]" />
+        <Card className="p-4 bg-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-denz-text-secondary">Under underhåll</p>
+              <p className="text-2xl font-semibold text-sky-600">0</p>
+            </div>
+            <Hammer size={24} className="text-sky-600/20" />
           </div>
         </Card>
       </div>
       
-      <Card className="shadow-md overflow-hidden border-[#334155] bg-[#111827]">
+      <Card className="bg-white border border-gray-200 rounded-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#0F172A] text-left border-b border-[#334155]">
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">ID</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Namn</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Kategori</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Tilldelad till</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Senast kontrollerad</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Status</th>
-                <th className="px-6 py-3 text-[#94A3B8] font-medium">Åtgärder</th>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Namn</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Kategori</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Tilldelad till</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Senast kontrollerad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wide">Åtgärder</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#334155]">
+            <tbody className="divide-y divide-gray-200">
               {toolsData.map((item, index) => (
-                <tr key={index} className="hover:bg-[#0F172A] transition-colors">
-                  <td className="px-6 py-4 font-medium text-white">{item.id}</td>
-                  <td className="px-6 py-4 text-white">{item.name}</td>
+                <tr key={index} className="hover:bg-blue-50/50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-denz-text-primary">{item.id}</td>
+                  <td className="px-6 py-4 text-denz-text-primary">{item.name}</td>
                   <td className="px-6 py-4">
-                    <Badge variant="outline" className="font-normal bg-[#1E293B] text-[#94A3B8] border-[#334155]">
+                    <Badge variant="outline" className="bg-gray-50 text-denz-text-secondary border-gray-200">
                       {item.category}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 text-[#94A3B8]">{item.assignedTo || "—"}</td>
-                  <td className="px-6 py-4 text-[#94A3B8]">{item.lastChecked}</td>
+                  <td className="px-6 py-4 text-denz-text-secondary">{item.assignedTo || "—"}</td>
+                  <td className="px-6 py-4 text-denz-text-secondary">{item.lastChecked}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(item.status)}`}>
+                    <Badge variant="outline" className={`px-2 py-0.5 ${getStatusColor(item.status)}`}>
                       {getStatusText(item.status)}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-[#3B82F6] hover:text-[#3B82F6]/80 font-medium text-sm">Visa</button>
-                      <span className="text-[#334155]">|</span>
-                      <button className="text-[#3B82F6] hover:text-[#3B82F6]/80 font-medium text-sm">Redigera</button>
+                      <button className="text-denz-blue hover:text-denz-dark-blue font-medium text-sm">Visa</button>
+                      <span className="text-gray-300">|</span>
+                      <button className="text-denz-blue hover:text-denz-dark-blue font-medium text-sm">Redigera</button>
                     </div>
                   </td>
                 </tr>
@@ -165,11 +180,24 @@ const Utrustning = () => {
         </div>
       </Card>
       
-      <div className="mt-6 flex justify-between items-center text-sm text-[#94A3B8]">
+      <div className="mt-6 flex justify-between items-center text-sm text-denz-text-secondary">
         <div>Visar 1-5 av 23 verktyg</div>
         <div className="flex space-x-2">
-          <button className="px-3 py-1 bg-[#111827] border border-[#334155] rounded-md hover:bg-[#1E293B] disabled:opacity-50 disabled:cursor-not-allowed" disabled>Föregående</button>
-          <button className="px-3 py-1 bg-[#111827] border border-[#334155] rounded-md hover:bg-[#1E293B]">Nästa</button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-gray-200" 
+            disabled
+          >
+            Föregående
+          </Button>
+          <Button 
+            variant="outline"
+            size="sm"
+            className="border-gray-200"
+          >
+            Nästa
+          </Button>
         </div>
       </div>
     </div>
