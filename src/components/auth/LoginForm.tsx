@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,21 +31,15 @@ const LoginForm: React.FC = () => {
       const result = await signIn(email, password);
       console.log("LoginForm: signIn resultat:", result);
       
-      if (result.success) {
-        toast.success("Inloggning lyckades!");
-      } else {
+      if (!result.success) {
         toast.error(result.error || "Inloggning misslyckades");
-        setIsSubmitting(false);
       }
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
+    } finally {
       setIsSubmitting(false);
     }
-    
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 10000);
   };
 
   const toggleShowPassword = () => {
