@@ -67,11 +67,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } catch (error) {
           console.error('Error in auth state change:', error);
           if (mounted) {
-            if (session) {
-              setUser({ id: session.user.id, name: 'User', role: 'user', status: 'active' } as Profile);
-            } else {
-              setUser(null);
-            }
             setLoading(false);
           }
         }
@@ -105,11 +100,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       } catch (error) {
         console.error('Error fetching initial user data:', error);
-        if (mounted && error instanceof Error) {
-          toast.error(`Ett fel uppstod: ${error.message}`);
-        }
         if (mounted) {
-          setUser(null);
           setLoading(false);
         }
       }
@@ -133,13 +124,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     try {
       const result = await signInWithEmailPassword(email, password);
+      console.log("Sign in result:", result);
 
       if (!result.success) {
         setLoading(false); // Reset loading state when login fails
         return { success: false, error: result.error };
       }
 
-      setUser(result.user);
+      // We don't manually set user here - the auth state change handler will do it
       toast.success("Inloggning lyckades!");
       
       // Let the auth state change handle redirection and loading state reset

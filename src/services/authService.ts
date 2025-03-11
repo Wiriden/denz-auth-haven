@@ -41,48 +41,53 @@ export const fetchUserProfile = async (userId: string): Promise<Profile> => {
 export const signInWithEmailPassword = async (email: string, password: string) => {
   console.log('Attempting to sign in with:', email);
   
-  const { data, error } = await supabase.auth.signInWithPassword({ 
-    email, 
-    password 
-  });
-
-  console.log('Sign in response:', data, error);
-
-  if (error) {
-    console.error("Sign in error:", error.message);
-    return { success: false, error: error.message, session: null, user: null };
-  }
-
-  if (!data.session) {
-    console.error("No session created during sign in");
-    return { success: false, error: 'Ingen session skapades vid inloggning', session: null, user: null };
-  }
-
-  console.log("Sign in successful, session created:", data.session.user.id);
-  
   try {
-    // Attempt to fetch user profile
-    const userProfile = await fetchUserProfile(data.session.user.id);
-    return { 
-      success: true, 
-      session: data.session,
-      user: userProfile
-    };
-  } catch (error) {
-    console.error("Error fetching user profile after sign in:", error);
-    // Create a minimal user object if profile fetch fails
-    const minimalUser = { 
-      id: data.session.user.id, 
-      name: 'User', 
-      role: 'user', 
-      status: 'active' 
-    } as Profile;
+    const { data, error } = await supabase.auth.signInWithPassword({ 
+      email, 
+      password 
+    });
+
+    console.log('Sign in response:', !!data, !!error);
+
+    if (error) {
+      console.error("Sign in error:", error.message);
+      return { success: false, error: error.message, session: null, user: null };
+    }
+
+    if (!data.session) {
+      console.error("No session created during sign in");
+      return { success: false, error: 'Ingen session skapades vid inloggning', session: null, user: null };
+    }
+
+    console.log("Sign in successful, session created:", data.session.user.id);
     
-    return { 
-      success: true, 
-      session: data.session,
-      user: minimalUser
-    };
+    try {
+      // Attempt to fetch user profile
+      const userProfile = await fetchUserProfile(data.session.user.id);
+      return { 
+        success: true, 
+        session: data.session,
+        user: userProfile
+      };
+    } catch (error) {
+      console.error("Error fetching user profile after sign in:", error);
+      // Create a minimal user object if profile fetch fails
+      const minimalUser = { 
+        id: data.session.user.id, 
+        name: 'User', 
+        role: 'user', 
+        status: 'active' 
+      } as Profile;
+      
+      return { 
+        success: true, 
+        session: data.session,
+        user: minimalUser
+      };
+    }
+  } catch (error: any) {
+    console.error("Unexpected error during sign in:", error);
+    return { success: false, error: error.message || "Ett oväntat fel uppstod", session: null, user: null };
   }
 };
 

@@ -11,7 +11,7 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signIn, loading } = useAuth();
+  const { signIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
     if (isSubmitting) return;
     
     setIsSubmitting(true);
-    console.log("LoginForm: Påbörjar inloggning");
+    console.log("LoginForm: Påbörjar inloggning", { email });
     
     try {
       console.log("LoginForm: Anropar signIn");
@@ -35,12 +35,12 @@ const LoginForm: React.FC = () => {
         toast.error(result.error || "Inloggning misslyckades");
         setIsSubmitting(false); // Reset form submission state on error
       }
+      // Don't reset isSubmitting on success as the page will redirect
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
       setIsSubmitting(false); // Reset form submission state on exception
     }
-    // Note: We don't reset isSubmitting on success because the page will redirect
   };
 
   const toggleShowPassword = () => {
