@@ -1,3 +1,4 @@
+
 import { supabase } from './supabase';
 
 // Typer
@@ -351,4 +352,4 @@ export const logActivity = async (activity: Partial<Activity>) => {
     
   if (error) throw error;
   return data as Activity;
-}; 
+};

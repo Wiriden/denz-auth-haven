@@ -9,198 +9,398 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      companies: {
+      activities: {
         Row: {
           created_at: string | null
-          id: number
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      employees: {
-        Row: {
-          company_id: number | null
-          contact_info: Json | null
-          created_at: string | null
-          id: number
-          name: string
-          role: string
-          skills: string[] | null
+          description: string | null
+          id: string
+          priority: string | null
+          related_item_id: string | null
+          timestamp: string | null
+          title: string
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
-          company_id?: number | null
-          contact_info?: Json | null
           created_at?: string | null
-          id?: number
-          name: string
-          role: string
-          skills?: string[] | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          related_item_id?: string | null
+          timestamp?: string | null
+          title: string
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
-          company_id?: number | null
-          contact_info?: Json | null
           created_at?: string | null
-          id?: number
-          name?: string
-          role?: string
-          skills?: string[] | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          related_item_id?: string | null
+          timestamp?: string | null
+          title?: string
           updated_at?: string | null
           user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "employees_company_id_fkey"
-            columns: ["company_id"]
+            foreignKeyName: "activities_related_item_id_fkey"
+            columns: ["related_item_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "items"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "employees_user_id_fkey"
+            foreignKeyName: "activities_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "active_certificates"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-      user_companies: {
-        Row: {
-          company_id: number
-          created_at: string | null
-          user_id: string
-        }
-        Insert: {
-          company_id: number
-          created_at?: string | null
-          user_id: string
-        }
-        Update: {
-          company_id?: number
-          created_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_companies_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_companies_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      users: {
+      categories: {
         Row: {
           created_at: string | null
-          email: string
+          description: string | null
           id: string
           name: string
-          role: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          email: string
-          id: string
+          description?: string | null
+          id?: string
           name: string
-          role?: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          email?: string
+          description?: string | null
           id?: string
           name?: string
-          role?: string
           updated_at?: string | null
         }
         Relationships: []
       }
-      vehicles: {
+      certificates: {
         Row: {
-          assigned_to: number | null
-          company_id: number | null
           created_at: string | null
-          gps_enabled: boolean | null
-          id: number
-          insurance_details: Json | null
-          make: string
-          model: string
-          registration_number: string
+          description: string | null
+          id: string
+          name: string
           updated_at: string | null
         }
         Insert: {
-          assigned_to?: number | null
-          company_id?: number | null
           created_at?: string | null
-          gps_enabled?: boolean | null
-          id?: number
-          insurance_details?: Json | null
-          make: string
-          model: string
-          registration_number: string
+          description?: string | null
+          id?: string
+          name: string
           updated_at?: string | null
         }
         Update: {
-          assigned_to?: number | null
-          company_id?: number | null
           created_at?: string | null
-          gps_enabled?: boolean | null
-          id?: number
-          insurance_details?: Json | null
-          make?: string
-          model?: string
-          registration_number?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      item_assignments: {
+        Row: {
+          assigned_date: string | null
+          created_at: string | null
+          id: string
+          item_id: string | null
+          return_date: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          assigned_date?: string | null
+          created_at?: string | null
+          id?: string
+          item_id?: string | null
+          return_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          assigned_date?: string | null
+          created_at?: string | null
+          id?: string
+          item_id?: string | null
+          return_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "item_assignments_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "item_assignments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "active_certificates"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "item_assignments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          item_type: string
+          last_checked: string | null
+          name: string
+          purchase_date: string | null
+          serial_number: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          item_type: string
+          last_checked?: string | null
+          name: string
+          purchase_date?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          item_type?: string
+          last_checked?: string | null
+          name?: string
+          purchase_date?: string | null
+          serial_number?: string | null
+          status?: string
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "vehicles_assigned_to_fkey"
-            columns: ["assigned_to"]
+            foreignKeyName: "items_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "employees"
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_logs: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          item_id: string | null
+          maintenance_date: string | null
+          next_maintenance_date: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          item_id?: string | null
+          maintenance_date?: string | null
+          next_maintenance_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          item_id?: string | null
+          maintenance_date?: string | null
+          next_maintenance_date?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_logs_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "vehicles_company_id_fkey"
-            columns: ["company_id"]
+            foreignKeyName: "maintenance_logs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "active_certificates"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "maintenance_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          contact: string | null
+          created_at: string | null
+          department: string | null
+          hire_date: string | null
+          id: string
+          name: string
+          role: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string | null
+          department?: string | null
+          hire_date?: string | null
+          id: string
+          name: string
+          role?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string | null
+          department?: string | null
+          hire_date?: string | null
+          id?: string
+          name?: string
+          role?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_certificates: {
+        Row: {
+          certificate_id: string | null
+          created_at: string | null
+          expiry_date: string
+          id: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          certificate_id?: string | null
+          created_at?: string | null
+          expiry_date: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          certificate_id?: string | null
+          created_at?: string | null
+          expiry_date?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_certificates_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "active_certificates"
+            referencedColumns: ["certificate_id"]
+          },
+          {
+            foreignKeyName: "user_certificates_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "active_certificates"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      active_certificates: {
+        Row: {
+          certificate_id: string | null
+          certificate_name: string | null
+          days_left: number | null
+          expiry_date: string | null
+          id: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      add_certificate_to_user: {
+        Args: {
+          user_id: string
+          certificate_id: string
+          expires_on: string
+        }
+        Returns: Json
+      }
+      checkin_item: {
+        Args: {
+          item_id: string
+        }
+        Returns: Json
+      }
+      checkout_item: {
+        Args: {
+          item_id: string
+          user_id: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
