@@ -1,3 +1,4 @@
+
 import AuthFooter from "@/components/auth/AuthFooter";
 import LoginForm from "@/components/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";

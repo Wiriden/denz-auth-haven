@@ -47,7 +47,8 @@ const LoginForm: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  const isLoading = loading || isSubmitting;
+  // Only show loading state when the form is actually being submitted
+  const isLoading = isSubmitting;
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6">
