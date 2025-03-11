@@ -33,13 +33,14 @@ const LoginForm: React.FC = () => {
       
       if (!result.success) {
         toast.error(result.error || "Inloggning misslyckades");
+        setIsSubmitting(false); // Reset form submission state on error
       }
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset form submission state on exception
     }
+    // Note: We don't reset isSubmitting on success because the page will redirect
   };
 
   const toggleShowPassword = () => {

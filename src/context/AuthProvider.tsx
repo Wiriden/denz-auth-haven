@@ -95,9 +95,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           
           if (mounted) {
             setUser(userData);
+            setLoading(false);
           }
         } else {
           console.log("No initial session");
+          if (mounted) {
+            setLoading(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching initial user data:', error);
@@ -106,10 +110,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
         if (mounted) {
           setUser(null);
-        }
-      } finally {
-        if (mounted) {
-          console.log("Initial load complete, setting loading to false");
           setLoading(false);
         }
       }
@@ -135,22 +135,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const result = await signInWithEmailPassword(email, password);
 
       if (!result.success) {
-        setLoading(false);
+        setLoading(false); // Reset loading state when login fails
         return { success: false, error: result.error };
       }
 
       setUser(result.user);
-      navigate('/dashboard');
       toast.success("Inloggning lyckades!");
       
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
-      
+      // Let the auth state change handle redirection and loading state reset
       return { success: true };
     } catch (error: any) {
       console.error('Login error:', error);
-      setLoading(false);
+      setLoading(false); // Reset loading state on error
       return { success: false, error: error.message || 'Ett oväntat fel uppstod' };
     }
   };
@@ -162,12 +158,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { error } = await signOutUser();
       if (error) {
         console.error("Sign out error:", error);
+        setLoading(false); // Reset loading state on error
         throw error;
       }
       console.log("Sign out successful");
+      // Auth state change will handle clearing user and navigation
     } catch (error: any) {
       console.error('Sign out error:', error);
-      setLoading(false);
+      setLoading(false); // Reset loading state on error
       throw error;
     }
   };

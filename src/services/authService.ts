@@ -60,19 +60,30 @@ export const signInWithEmailPassword = async (email: string, password: string) =
 
   console.log("Sign in successful, session created:", data.session.user.id);
   
-  // Create a minimal user object directly after successful auth
-  const minimalUser = { 
-    id: data.session.user.id, 
-    name: 'User', 
-    role: 'user', 
-    status: 'active' 
-  } as Profile;
-  
-  return { 
-    success: true, 
-    session: data.session,
-    user: minimalUser
-  };
+  try {
+    // Attempt to fetch user profile
+    const userProfile = await fetchUserProfile(data.session.user.id);
+    return { 
+      success: true, 
+      session: data.session,
+      user: userProfile
+    };
+  } catch (error) {
+    console.error("Error fetching user profile after sign in:", error);
+    // Create a minimal user object if profile fetch fails
+    const minimalUser = { 
+      id: data.session.user.id, 
+      name: 'User', 
+      role: 'user', 
+      status: 'active' 
+    } as Profile;
+    
+    return { 
+      success: true, 
+      session: data.session,
+      user: minimalUser
+    };
+  }
 };
 
 /**
@@ -90,4 +101,3 @@ export const getCurrentSession = async () => {
   const { data } = await supabase.auth.getSession();
   return data.session;
 };
-
