@@ -51,7 +51,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     let mounted = true;
+    let loadingTimeout: number | undefined;
+    
     console.log("AuthProvider initialized, loading:", loading);
+
+    // Set a timeout to prevent infinite loading
+    loadingTimeout = window.setTimeout(() => {
+      if (mounted && loading) {
+        console.log("Forcing loading state to false after timeout");
+        setLoading(false);
+      }
+    }, 5000); // 5 second timeout
 
     // Lyssna på auth-ändringar
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -129,6 +139,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error('Fel vid hämtning av initial användardata:', error);
+        if (mounted && error instanceof Error) {
+          toast.error(`Ett fel uppstod: ${error.message}`);
+        }
         if (mounted) {
           setUser(null);
         }
@@ -145,6 +158,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       console.log("AuthProvider cleaning up");
       mounted = false;
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
       subscription.unsubscribe();
     };
   }, [navigate]);

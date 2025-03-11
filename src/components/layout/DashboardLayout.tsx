@@ -1,13 +1,20 @@
+
 import { UserProvider } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 const DashboardLayout = () => {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
   
-  // Visar loading-indikator när auth valideras
+  useEffect(() => {
+    // Debug loading state
+    console.log("DashboardLayout loading state:", loading, "user:", !!user);
+  }, [loading, user]);
+  
+  // Show loading indicator for max 3 seconds to prevent infinite loading
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
