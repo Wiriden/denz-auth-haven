@@ -18,54 +18,45 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     let mounted = true;
-    let loadingTimeout: number | undefined;
-    
-    console.log("AuthProvider initialized, loading:", loading);
-
-    // Set a timeout to prevent infinite loading
-    loadingTimeout = window.setTimeout(() => {
-      if (mounted && loading) {
-        console.log("Forcing loading state to false after timeout");
-        setLoading(false);
-      }
-    }, 5000);
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event, !!session);
+        
         if (!mounted) return;
 
         try {
           if (session) {
-            if (mounted && event === 'SIGNED_IN') setLoading(true);
-            console.log("Session found, loading user data...");
-            
+            // Only set loading true on initial load or new sign in
+            if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+              setLoading(true);
+            }
+
             const userId = session.user.id;
             const userData = await fetchUserProfile(userId);
-            console.log("User data fetched:", !!userData);
             
             if (mounted) {
               setUser(userData);
+              
               if (event === 'SIGNED_IN') {
                 console.log("User signed in, navigating to dashboard");
                 navigate('/dashboard');
               }
-              setLoading(false);
             }
           } else {
             if (mounted) {
-              console.log("No session, clearing user");
               setUser(null);
               if (event === 'SIGNED_OUT') {
                 console.log("User signed out, navigating to login");
                 navigate('/');
               }
-              setLoading(false);
             }
           }
         } catch (error) {
           console.error('Error in auth state change:', error);
+          toast.error('Ett fel uppstod vid inloggning');
+        } finally {
           if (mounted) {
             setLoading(false);
           }
@@ -73,91 +64,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     );
 
-    // Fetch initial user
-    const getInitialUser = async () => {
-      if (!mounted) return;
-      console.log("Fetching initial user...");
-
+    // Check initial session
+    const checkSession = async () => {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        console.log("Initial session:", !!sessionData.session);
-        
-        if (sessionData.session && mounted) {
-          console.log("Session exists, getting user data");
-          const userId = sessionData.session.user.id;
-          const userData = await fetchUserProfile(userId);
-          console.log("Initial user data:", !!userData);
-          
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && mounted) {
+          const userData = await fetchUserProfile(session.user.id);
           if (mounted) {
             setUser(userData);
-            setLoading(false);
-          }
-        } else {
-          console.log("No initial session");
-          if (mounted) {
-            setLoading(false);
           }
         }
       } catch (error) {
-        console.error('Error fetching initial user data:', error);
+        console.error('Error checking initial session:', error);
+      } finally {
         if (mounted) {
           setLoading(false);
         }
       }
     };
 
-    getInitialUser();
+    checkSession();
 
     return () => {
-      console.log("AuthProvider cleaning up");
       mounted = false;
-      if (loadingTimeout) {
-        clearTimeout(loadingTimeout);
-      }
       subscription.unsubscribe();
     };
   }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
-    console.log("Starting sign in process...");
-    setLoading(true);
-    
     try {
+      setLoading(true);
       const result = await signInWithEmailPassword(email, password);
-      console.log("Sign in result:", result.success, result.error);
 
       if (!result.success) {
-        setLoading(false); // Reset loading state when login fails
+        toast.error(result.error || 'Inloggning misslyckades');
         return { success: false, error: result.error };
       }
 
-      // Important: We don't manually navigate here - the auth state change handler will do it
-      toast.success("Inloggning lyckades!");
-      
+      // The auth state change handler will handle setting the user and navigation
       return { success: true };
     } catch (error: any) {
       console.error('Login error:', error);
-      setLoading(false); // Reset loading state on error
-      return { success: false, error: error.message || 'Ett oväntat fel uppstod' };
+      toast.error(error.message || 'Ett oväntat fel uppstod');
+      return { success: false, error: error.message };
+    } finally {
+      // Only reset loading if sign in failed - successful sign in will be handled by auth state change
+      setLoading(false);
     }
   };
 
   const signOut = async () => {
-    setLoading(true);
     try {
-      console.log("Signing out...");
-      const { error } = await signOutUser();
-      if (error) {
-        console.error("Sign out error:", error);
-        setLoading(false); // Reset loading state on error
-        throw error;
-      }
-      console.log("Sign out successful");
-      // Auth state change will handle clearing user and navigation
+      await signOutUser();
+      // Auth state change will handle the rest
     } catch (error: any) {
       console.error('Sign out error:', error);
-      setLoading(false); // Reset loading state on error
-      throw error;
+      toast.error('Ett fel uppstod vid utloggning');
     }
   };
 

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,23 +23,19 @@ const LoginForm: React.FC = () => {
     if (isSubmitting) return;
     
     setIsSubmitting(true);
-    console.log("LoginForm: Påbörjar inloggning", { email });
     
     try {
-      console.log("LoginForm: Anropar signIn");
       const result = await signIn(email, password);
-      console.log("LoginForm: signIn resultat:", result);
       
       if (!result.success) {
         toast.error(result.error || "Inloggning misslyckades");
-        setIsSubmitting(false); // Reset form submission state on error
+        setIsSubmitting(false);
       }
-      // Note: We don't reset isSubmitting on success because the redirect will happen
-      // and this component will unmount
+      // Note: We don't reset isSubmitting on success because the component will unmount
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
-      setIsSubmitting(false); // Reset form submission state on exception
+      setIsSubmitting(false);
     }
   };
 
