@@ -7,16 +7,16 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 const DashboardLayout = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, authChecked } = useAuth();
   
   useEffect(() => {
     // Only log in development mode to reduce console noise
     if (process.env.NODE_ENV === 'development') {
-      console.log("DashboardLayout state:", { loading, user: !!user });
+      console.log("DashboardLayout state:", { loading, authChecked, user: !!user });
     }
-  }, [loading, user]);
+  }, [loading, authChecked, user]);
   
-  // If still loading, show loading indicator
+  // Show loading indicator while checking auth
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -25,11 +25,13 @@ const DashboardLayout = () => {
     );
   }
   
-  // If not loading anymore and no user, redirect to login
-  if (!loading && !user) {
+  // If we've checked auth and have no user, redirect to login
+  if (authChecked && !user) {
+    console.log("No authenticated user found, redirecting to login");
     return <Navigate to="/" replace />;
   }
   
+  // If we have a user, show the dashboard
   return (
     <UserProvider>
       <div className="flex h-screen bg-gray-50">

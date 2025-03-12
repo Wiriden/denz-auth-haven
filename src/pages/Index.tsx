@@ -6,16 +6,16 @@ import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 const Index = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, authChecked } = useAuth();
   
   useEffect(() => {
-    // Sätt titel för sidan
+    // Set page title
     document.title = "Denz | Logga in";
-    console.log("Index rendered, user:", !!user, "loading:", loading);
-  }, [user, loading]);
+    console.log("Index rendered, user:", !!user, "loading:", loading, "authChecked:", authChecked);
+  }, [user, loading, authChecked]);
 
-  // Om användaren redan är inloggad och det inte laddar, redirect till dashboard
-  if (user && !loading) {
+  // Only redirect if we've checked auth and found a user
+  if (authChecked && user && !loading) {
     console.log("User is logged in, redirecting to dashboard");
     return <Navigate to="/dashboard" replace />;
   }
@@ -30,7 +30,7 @@ const Index = () => {
           <span className="ml-3 text-xl font-semibold text-denz-text-primary">Assetmaster</span>
         </div>
         
-        {/* Visa alltid inloggningsformuläret, loading-statusen hanteras inuti formuläret */}
+        {/* Always show login form, loading state is handled inside the form */}
         <LoginForm />
         
         <AuthFooter />

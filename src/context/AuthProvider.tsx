@@ -14,79 +14,78 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
 
+  // Check initial session on mount
   useEffect(() => {
-    let mounted = true;
+    const checkSession = async () => {
+      try {
+        console.log("Checking initial session...");
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          console.log("Session found, fetching user profile...");
+          try {
+            const userData = await fetchUserProfile(session.user.id);
+            setUser(userData);
+            console.log("User profile set:", !!userData);
+          } catch (error) {
+            console.error("Error fetching user profile:", error);
+            setUser(null);
+          }
+        } else {
+          console.log("No session found");
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+        setAuthChecked(true);
+      }
+    };
 
-    // Listen for auth state changes
+    checkSession();
+  }, []);
+
+  // Listen for auth state changes
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log("Auth state changed:", event, !!session);
-        }
+        console.log("Auth state changed:", event, !!session);
         
-        if (!mounted) return;
-
-        try {
-          if (session) {
-            // Only set loading true on initial load or new sign in
-            if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        if (session) {
+          try {
+            // Set loading to true for sign-in events
+            if (event === 'SIGNED_IN') {
               setLoading(true);
             }
-
-            const userId = session.user.id;
-            const userData = await fetchUserProfile(userId);
             
-            if (mounted) {
-              setUser(userData);
-              
-              if (event === 'SIGNED_IN') {
-                navigate('/dashboard');
-              }
+            const userData = await fetchUserProfile(session.user.id);
+            setUser(userData);
+            
+            if (event === 'SIGNED_IN') {
+              navigate('/dashboard');
+              setLoading(false);
             }
-          } else {
-            if (mounted) {
-              setUser(null);
-              if (event === 'SIGNED_OUT') {
-                navigate('/');
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error in auth state change:', error);
-          toast.error('Ett fel uppstod vid inloggning');
-        } finally {
-          if (mounted) {
+          } catch (error) {
+            console.error('Error in auth state change:', error);
+            setUser(null);
             setLoading(false);
+            toast.error('Ett fel uppstod vid inloggning');
+          }
+        } else {
+          setUser(null);
+          if (event === 'SIGNED_OUT') {
+            navigate('/');
           }
         }
       }
     );
 
-    // Check initial session
-    const checkSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session && mounted) {
-          const userData = await fetchUserProfile(session.user.id);
-          if (mounted) {
-            setUser(userData);
-          }
-        }
-      } catch (error) {
-        console.error('Error checking initial session:', error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    checkSession();
-
     return () => {
-      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -94,6 +93,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
+      console.log("Attempting to sign in with:", email);
+      
       const result = await signInWithEmailPassword(email, password);
 
       if (!result.success) {
@@ -101,8 +102,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setLoading(false);
         return { success: false, error: result.error };
       }
-
-      // The auth state change handler will handle setting the user and navigation
+      
+      // Auth state change handler will handle the user setting and navigation
       return { success: true };
     } catch (error: any) {
       console.error('Login error:', error);
@@ -114,16 +115,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
+      setLoading(true);
       await signOutUser();
       // Auth state change will handle the rest
     } catch (error: any) {
       console.error('Sign out error:', error);
       toast.error('Ett fel uppstod vid utloggning');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, authChecked, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

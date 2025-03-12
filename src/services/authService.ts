@@ -4,6 +4,7 @@ import type { Profile } from '@/lib/api';
 
 export const fetchUserProfile = async (userId: string): Promise<Profile> => {
   try {
+    console.log("Fetching user profile for ID:", userId);
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -12,34 +13,19 @@ export const fetchUserProfile = async (userId: string): Promise<Profile> => {
       
     if (error) {
       console.error("Error fetching user profile:", error);
-      // Return a fallback profile if we can't fetch from the database
-      return { 
-        id: userId, 
-        name: 'Användare', 
-        role: 'user', 
-        status: 'active' 
-      } as Profile;
+      throw new Error('Kunde inte hämta användarprofil');
     }
     
     if (!data) {
       console.error("No profile found for user ID:", userId);
-      return { 
-        id: userId, 
-        name: 'Användare', 
-        role: 'user', 
-        status: 'active' 
-      } as Profile;
+      throw new Error('Ingen användarprofil hittades');
     }
     
+    console.log("User profile fetched successfully");
     return data as Profile;
   } catch (error) {
     console.error("Exception in fetchUserProfile:", error);
-    return { 
-      id: userId, 
-      name: 'Användare', 
-      role: 'user', 
-      status: 'active' 
-    } as Profile;
+    throw new Error('Ett fel uppstod vid hämtning av användarprofil');
   }
 };
 
@@ -53,11 +39,18 @@ export const signInWithEmailPassword = async (email: string, password: string) =
 
     if (error) {
       console.error("Sign-in error:", error.message);
+      
+      // Translate common error messages to Swedish
+      let errorMessage = error.message;
+      if (error.message === 'Invalid login credentials') {
+        errorMessage = 'Felaktiga inloggningsuppgifter';
+      } else if (error.message.includes('rate limit')) {
+        errorMessage = 'För många inloggningsförsök. Vänta en stund och försök igen.';
+      }
+      
       return { 
         success: false, 
-        error: error.message === 'Invalid login credentials' 
-          ? 'Felaktiga inloggningsuppgifter' 
-          : error.message,
+        error: errorMessage,
         session: null, 
         user: null 
       };
@@ -72,13 +65,12 @@ export const signInWithEmailPassword = async (email: string, password: string) =
       };
     }
 
-    console.log("Sign-in successful, fetching user profile");
+    console.log("Sign-in successful");
     
-    // Return success here to allow AuthProvider to handle the profile fetching
     return { 
       success: true, 
       session: data.session,
-      user: null
+      user: data.user
     };
   } catch (error: any) {
     console.error("Unexpected error during sign-in:", error);
@@ -92,10 +84,12 @@ export const signInWithEmailPassword = async (email: string, password: string) =
 };
 
 export const signOutUser = async () => {
+  console.log("Signing out user");
   return await supabase.auth.signOut();
 };
 
 export const getCurrentSession = async () => {
+  console.log("Getting current session");
   const { data } = await supabase.auth.getSession();
   return data.session;
 };
