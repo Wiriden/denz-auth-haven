@@ -2,7 +2,7 @@
 import { UserProvider } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
@@ -16,22 +16,7 @@ const DashboardLayout = () => {
     }
   }, [loading, authChecked, user]);
   
-  // Only show loading when we're actively checking auth but not after it's checked
-  if (loading && !authChecked) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="h-12 w-12 border-4 border-t-transparent border-denz-blue rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-  
-  // If we've checked auth and have no user, redirect to login
-  if (authChecked && !user) {
-    console.log("No authenticated user found, redirecting to login");
-    return <Navigate to="/" replace />;
-  }
-  
-  // If we have a user, show the dashboard
+  // In demo mode, we always show the dashboard regardless of authentication state
   return (
     <UserProvider>
       <div className="flex h-screen bg-gray-50">

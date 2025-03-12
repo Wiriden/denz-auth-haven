@@ -1,11 +1,10 @@
-
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { Profile } from '@/lib/api';
 import { AuthContext } from './AuthContext';
 import { fetchUserProfile, signInWithEmailPassword, signOutUser } from '@/services/authService';
-import { getMockUser } from '@/lib/mockData';
+import { getMockUser, mockProfiles, setMockUser } from '@/lib/mockData';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -17,39 +16,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
 
-  // Check initial session on mount
+  // Check initial session and automatically set a mock user
   useEffect(() => {
-    const checkSession = async () => {
+    const autoLogin = async () => {
       try {
-        console.log("Checking initial session...");
-        // In mock version, just check if we have a stored user
-        const mockUser = getMockUser();
+        console.log("Auto-logging in with mock user...");
+        // Automatically use the first admin user for demo purposes
+        const adminUser = mockProfiles.find(profile => profile.role === 'admin') || mockProfiles[0];
         
-        if (mockUser) {
-          console.log("Session found, fetching user profile...");
-          try {
-            const userData = await fetchUserProfile(mockUser.id);
-            setUser(userData);
-            console.log("User profile set:", !!userData);
-          } catch (error) {
-            console.error("Error fetching user profile:", error);
-            setUser(null);
-          }
-        } else {
-          console.log("No session found");
-          setUser(null);
-        }
+        // Set this user as the logged in user
+        setMockUser(adminUser);
+        setUser(adminUser);
+        console.log("Auto-login successful with user:", adminUser.name);
       } catch (error) {
-        console.error("Error checking session:", error);
-        setUser(null);
+        console.error("Error during auto-login:", error);
       } finally {
         setAuthChecked(true);
       }
     };
 
-    checkSession();
+    autoLogin();
   }, []);
 
+  // Keep the original signIn and signOut methods for UI functionality
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
