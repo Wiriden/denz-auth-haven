@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkSession = async () => {
       try {
         console.log("Checking initial session...");
-        setLoading(true);
         
+        // Don't set loading to true here, as it triggers the spinner on initial page load
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.error("Error checking session:", error);
         setUser(null);
       } finally {
-        setLoading(false);
         setAuthChecked(true);
       }
     };
@@ -60,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         if (session) {
           try {
-            // Only set loading to true for specific events
+            // Only set loading to true for sign-in event
             if (event === 'SIGNED_IN') {
               setLoading(true);
             }

@@ -10,14 +10,14 @@ const DashboardLayout = () => {
   const { user, loading, authChecked } = useAuth();
   
   useEffect(() => {
-    // Only log in development mode to reduce console noise
+    // Log in development mode to reduce console noise
     if (process.env.NODE_ENV === 'development') {
       console.log("DashboardLayout state:", { loading, authChecked, user: !!user });
     }
   }, [loading, authChecked, user]);
   
-  // Show loading indicator while checking auth
-  if (loading) {
+  // Only show loading when we're actively checking auth but not after it's checked
+  if (loading && !authChecked) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="h-12 w-12 border-4 border-t-transparent border-denz-blue rounded-full animate-spin"></div>

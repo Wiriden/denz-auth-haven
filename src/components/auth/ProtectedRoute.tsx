@@ -8,12 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, loading } = useAuth();
+  const { user, loading, authChecked } = useAuth();
   const location = useLocation();
   const [timeoutReached, setTimeoutReached] = useState(false);
 
   useEffect(() => {
-    console.log("ProtectedRoute:", { user, loading, path: location.pathname });
+    console.log("ProtectedRoute:", { user, loading, authChecked, path: location.pathname });
     
     // Set a timeout to prevent infinite loading
     const timeout = setTimeout(() => {
@@ -24,10 +24,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }, 5000); // 5 second timeout
     
     return () => clearTimeout(timeout);
-  }, [user, loading, location]);
+  }, [user, loading, location, authChecked]);
 
-  // Show loading spinner for a maximum of 5 seconds
-  if (loading && !timeoutReached) {
+  // If we're still loading and haven't reached timeout, show spinner
+  if (loading && !timeoutReached && !authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="h-8 w-8 border-4 border-t-transparent border-denz-blue rounded-full animate-spin"></div>
@@ -35,9 +35,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // If timeout reached but still no user, redirect to login
-  if ((timeoutReached || !loading) && !user) {
-    console.log("No user after loading finished, redirecting to login");
+  // If auth is checked and no user, or timeout reached, redirect to login
+  if ((authChecked && !user) || (timeoutReached && !user)) {
+    console.log("No user after auth check or timeout, redirecting to login");
     return <Navigate to="/" replace />;
   }
 
