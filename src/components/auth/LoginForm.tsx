@@ -35,7 +35,8 @@ const LoginForm: React.FC = () => {
         toast.error(result.error || "Inloggning misslyckades");
         setIsSubmitting(false); // Reset form submission state on error
       }
-      // Don't reset isSubmitting on success as the page will redirect
+      // Note: We don't reset isSubmitting on success because the redirect will happen
+      // and this component will unmount
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
@@ -46,9 +47,6 @@ const LoginForm: React.FC = () => {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
-  // Only show loading state when the form is actually being submitted
-  const isLoading = isSubmitting;
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -68,7 +66,7 @@ const LoginForm: React.FC = () => {
               className="pl-10 h-10 bg-white border-gray-200 rounded-md focus:border-denz-blue focus:ring-1 focus:ring-denz-blue/20 w-full"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
+              disabled={isSubmitting}
               required
             />
           </div>
@@ -92,7 +90,7 @@ const LoginForm: React.FC = () => {
               className="pl-10 pr-10 h-10 bg-white border-gray-200 rounded-md focus:border-denz-blue focus:ring-1 focus:ring-denz-blue/20 w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
+              disabled={isSubmitting}
               required
             />
             <button
@@ -100,7 +98,7 @@ const LoginForm: React.FC = () => {
               onClick={toggleShowPassword}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-denz-text-secondary hover:text-denz-text-primary focus:outline-none"
               aria-label={showPassword ? "Dölj lösenord" : "Visa lösenord"}
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </button>
@@ -110,9 +108,9 @@ const LoginForm: React.FC = () => {
         <Button 
           type="submit" 
           className="w-full h-10 bg-denz-blue hover:bg-denz-dark-blue text-white transition-colors duration-200 rounded-md mt-2"
-          disabled={isLoading}
+          disabled={isSubmitting}
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <div className="flex items-center justify-center">
               <div className="h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
               Loggar in...

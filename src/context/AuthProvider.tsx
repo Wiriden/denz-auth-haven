@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         try {
           if (session) {
-            if (mounted) setLoading(true);
+            if (mounted && event === 'SIGNED_IN') setLoading(true);
             console.log("Session found, loading user data...");
             
             const userId = session.user.id;
@@ -124,17 +124,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     try {
       const result = await signInWithEmailPassword(email, password);
-      console.log("Sign in result:", result);
+      console.log("Sign in result:", result.success, result.error);
 
       if (!result.success) {
         setLoading(false); // Reset loading state when login fails
         return { success: false, error: result.error };
       }
 
-      // We don't manually set user here - the auth state change handler will do it
+      // Important: We don't manually navigate here - the auth state change handler will do it
       toast.success("Inloggning lyckades!");
       
-      // Let the auth state change handle redirection and loading state reset
       return { success: true };
     } catch (error: any) {
       console.error('Login error:', error);

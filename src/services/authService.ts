@@ -47,7 +47,7 @@ export const signInWithEmailPassword = async (email: string, password: string) =
       password 
     });
 
-    console.log('Sign in response:', !!data, !!error);
+    console.log('Sign in response:', !!data, error ? `Error: ${error.message}` : 'No error');
 
     if (error) {
       console.error("Sign in error:", error.message);
@@ -59,7 +59,7 @@ export const signInWithEmailPassword = async (email: string, password: string) =
       return { success: false, error: 'Ingen session skapades vid inloggning', session: null, user: null };
     }
 
-    console.log("Sign in successful, session created:", data.session.user.id);
+    console.log("Sign in successful, session created for user:", data.session.user.id);
     
     try {
       // Attempt to fetch user profile
