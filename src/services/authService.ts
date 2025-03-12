@@ -1,28 +1,24 @@
 
-import { supabase } from '@/lib/supabase';
+import { setMockUser } from '@/lib/mockData';
 import type { Profile } from '@/lib/api';
+import { mockProfiles } from '@/lib/mockData';
 
 export const fetchUserProfile = async (userId: string): Promise<Profile> => {
   try {
     console.log("Fetching user profile for ID:", userId);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
-      
-    if (error) {
-      console.error("Error fetching user profile:", error);
-      throw new Error('Kunde inte hämta användarprofil');
-    }
     
-    if (!data) {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const profile = mockProfiles.find(profile => profile.id === userId);
+      
+    if (!profile) {
       console.error("No profile found for user ID:", userId);
       throw new Error('Ingen användarprofil hittades');
     }
     
     console.log("User profile fetched successfully");
-    return data as Profile;
+    return profile;
   } catch (error) {
     console.error("Exception in fetchUserProfile:", error);
     throw new Error('Ett fel uppstod vid hämtning av användarprofil');
@@ -32,45 +28,38 @@ export const fetchUserProfile = async (userId: string): Promise<Profile> => {
 export const signInWithEmailPassword = async (email: string, password: string) => {
   try {
     console.log("Attempting to sign in with:", email);
-    const { data, error } = await supabase.auth.signInWithPassword({ 
-      email, 
-      password 
-    });
-
-    if (error) {
-      console.error("Sign-in error:", error.message);
-      
-      // Translate common error messages to Swedish
-      let errorMessage = error.message;
-      if (error.message === 'Invalid login credentials') {
-        errorMessage = 'Felaktiga inloggningsuppgifter';
-      } else if (error.message.includes('rate limit')) {
-        errorMessage = 'För många inloggningsförsök. Vänta en stund och försök igen.';
-      }
-      
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // For demo purposes, accept any valid email format and 'password' as the password
+    if (!email.includes('@') || password !== 'password') {
+      console.error("Sign-in error: Invalid credentials");
       return { 
         success: false, 
-        error: errorMessage,
+        error: 'Felaktiga inloggningsuppgifter',
         session: null, 
         user: null 
       };
     }
 
-    if (!data.session) {
-      return { 
-        success: false, 
-        error: 'Ingen session skapades vid inloggning', 
-        session: null, 
-        user: null 
-      };
+    // Find or create a mock user based on email
+    let user = mockProfiles.find(profile => profile.contact === email);
+    
+    // If no user is found with the exact email, just use the first admin user
+    if (!user) {
+      user = mockProfiles.find(profile => profile.role === 'admin') || mockProfiles[0];
     }
+    
+    // Set the mock user as the current user
+    setMockUser(user);
 
     console.log("Sign-in successful");
     
     return { 
       success: true, 
-      session: data.session,
-      user: data.user
+      session: { user: { id: user.id } },
+      user: user
     };
   } catch (error: any) {
     console.error("Unexpected error during sign-in:", error);
@@ -85,11 +74,13 @@ export const signInWithEmailPassword = async (email: string, password: string) =
 
 export const signOutUser = async () => {
   console.log("Signing out user");
-  return await supabase.auth.signOut();
+  // Clear the current user
+  setMockUser(null);
+  return { error: null };
 };
 
 export const getCurrentSession = async () => {
   console.log("Getting current session");
-  const { data } = await supabase.auth.getSession();
-  return data.session;
+  const user = mockProfiles[0]; // Always return the first user for demo
+  return user ? { user: { id: user.id } } : null;
 };

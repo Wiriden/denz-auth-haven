@@ -3,9 +3,9 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { Profile } from '@/lib/api';
-import { supabase } from '@/lib/supabase';
 import { AuthContext } from './AuthContext';
 import { fetchUserProfile, signInWithEmailPassword, signOutUser } from '@/services/authService';
+import { getMockUser } from '@/lib/mockData';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -22,12 +22,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkSession = async () => {
       try {
         console.log("Checking initial session...");
-        const { data: { session } } = await supabase.auth.getSession();
+        // In mock version, just check if we have a stored user
+        const mockUser = getMockUser();
         
-        if (session) {
+        if (mockUser) {
           console.log("Session found, fetching user profile...");
           try {
-            const userData = await fetchUserProfile(session.user.id);
+            const userData = await fetchUserProfile(mockUser.id);
             setUser(userData);
             console.log("User profile set:", !!userData);
           } catch (error) {
@@ -49,39 +50,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkSession();
   }, []);
 
-  // Listen for auth state changes
-  useEffect(() => {
-    console.log("Setting up auth state change listener");
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Auth state changed:", event, !!session);
-        
-        if (session) {
-          try {
-            const userData = await fetchUserProfile(session.user.id);
-            setUser(userData);
-            if (event === 'SIGNED_IN') {
-              navigate('/dashboard');
-            }
-          } catch (error) {
-            console.error('Error in auth state change:', error);
-            setUser(null);
-            toast.error('Ett fel uppstod vid inloggning');
-          }
-        } else {
-          setUser(null);
-          if (event === 'SIGNED_OUT') {
-            navigate('/');
-          }
-        }
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
-
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
@@ -94,7 +62,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { success: false, error: result.error };
       }
       
-      return { success: true };
+      try {
+        if (result.user) {
+          setUser(result.user as Profile);
+        } else if (result.session?.user?.id) {
+          const userData = await fetchUserProfile(result.session.user.id);
+          setUser(userData);
+        }
+        
+        // Navigate after successful login
+        navigate('/dashboard');
+        return { success: true };
+      } catch (error: any) {
+        console.error('Error fetching user profile after login:', error);
+        toast.error('Kunde inte hämta användardata');
+        return { success: false, error: error.message };
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error.message || 'Ett oväntat fel uppstod');
@@ -108,6 +91,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setLoading(true);
       await signOutUser();
+      setUser(null);
+      navigate('/');
     } catch (error: any) {
       console.error('Sign out error:', error);
       toast.error('Ett fel uppstod vid utloggning');

@@ -1,7 +1,9 @@
 
-import { supabase } from './supabase';
+import { mockActivities, mockCategories, mockCertificates, mockItemAssignments, 
+         mockItems, mockMaintenanceLogs, mockProfiles, mockUserCertificates,
+         getMockUser, setMockUser } from './mockData';
 
-// Typer
+// Types
 export type Profile = {
   id: string;
   name: string;
@@ -83,273 +85,314 @@ export type Activity = {
   item_name?: string;
 };
 
-// Användare/Profiler
+// Helper to simulate async API calls
+const mockAsync = <T>(data: T): Promise<T> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(data), 300);
+  });
+};
+
+// Users/Profiles
 export const getCurrentUser = async () => {
-  try {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError) throw userError;
-    if (!user) return null;
-    
-    const { data, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-      
-    if (profileError) throw profileError;
-    if (!data) throw new Error('Ingen profil hittades');
-    
-    return data as Profile;
-  } catch (error) {
-    console.error('Fel vid hämtning av användare:', error);
-    throw error;
-  }
+  return mockAsync(getMockUser());
 };
 
 export const getProfiles = async () => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .order('name');
-    
-  if (error) throw error;
-  return data as Profile[];
+  return mockAsync(mockProfiles);
 };
 
 export const updateProfile = async (id: string, profile: Partial<Profile>) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(profile)
-    .eq('id', id)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data as Profile;
+  const index = mockProfiles.findIndex(p => p.id === id);
+  if (index === -1) throw new Error('Profil hittades inte');
+  
+  const updatedProfile = { ...mockProfiles[index], ...profile };
+  mockProfiles[index] = updatedProfile as Profile;
+  
+  // Update current user if the updated profile is the logged-in user
+  if (getMockUser()?.id === id) {
+    setMockUser(updatedProfile as Profile);
+  }
+  
+  return mockAsync(updatedProfile as Profile);
 };
 
-// Certifikat
+// Certificates
 export const getCertificates = async () => {
-  const { data, error } = await supabase
-    .from('certificates')
-    .select('*')
-    .order('name');
-    
-  if (error) throw error;
-  return data as Certificate[];
+  return mockAsync(mockCertificates);
 };
 
 export const getUserCertificates = async (userId?: string) => {
-  let query = supabase
-    .from('active_certificates')
-    .select('*')
-    .order('days_left');
-    
   if (userId) {
-    query = query.eq('user_id', userId);
+    return mockAsync(mockUserCertificates.filter(cert => cert.user_id === userId));
   }
-  
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  return data as UserCertificate[];
+  return mockAsync(mockUserCertificates);
 };
 
 export const addCertificateToUser = async (userId: string, certificateId: string, expiryDate: string) => {
-  const { data, error } = await supabase
-    .rpc('add_certificate_to_user', {
-      user_id: userId,
-      certificate_id: certificateId,
-      expires_on: expiryDate
-    });
-    
-  if (error) throw error;
-  return data;
+  const user = mockProfiles.find(p => p.id === userId);
+  const certificate = mockCertificates.find(c => c.id === certificateId);
+  
+  if (!user || !certificate) throw new Error('Användare eller certifikat hittades inte');
+  
+  const existingCert = mockUserCertificates.find(
+    c => c.user_id === userId && c.certificate_id === certificateId
+  );
+  
+  if (existingCert) return mockAsync({ success: false, message: 'Användaren har redan detta certifikat' });
+  
+  const now = new Date();
+  const expiry = new Date(expiryDate);
+  const daysLeft = Math.floor((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  
+  const newCert: UserCertificate = {
+    id: String(mockUserCertificates.length + 1),
+    user_id: userId,
+    certificate_id: certificateId,
+    expiry_date: expiryDate,
+    certificate_name: certificate.name,
+    user_name: user.name,
+    days_left: daysLeft
+  };
+  
+  mockUserCertificates.push(newCert);
+  
+  return mockAsync({ success: true, message: 'Certifikat tillagt för användaren' });
 };
 
-// Kategorier
+// Categories
 export const getCategories = async () => {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*, items(count)');
-    
-  if (error) throw error;
-  
-  return data.map(category => ({
-    ...category,
-    itemCount: category.items?.[0]?.count || 0
-  })) as Category[];
+  return mockAsync(mockCategories);
 };
 
 export const createCategory = async (category: Partial<Category>) => {
-  const { data, error } = await supabase
-    .from('categories')
-    .insert(category)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data as Category;
+  const newCategory: Category = {
+    id: String(mockCategories.length + 1),
+    name: category.name || 'Ny kategori',
+    description: category.description,
+    itemCount: 0
+  };
+  
+  mockCategories.push(newCategory);
+  
+  return mockAsync(newCategory);
 };
 
-// Utrustning
+// Items
 export const getItems = async (categoryId?: string, status?: string, itemType?: string) => {
-  let query = supabase
-    .from('items')
-    .select(`
-      *,
-      categories(name),
-      item_assignments(user_id, profiles(name))
-    `)
-    .order('name');
-    
+  let filteredItems = [...mockItems];
+  
   if (categoryId) {
-    query = query.eq('category_id', categoryId);
+    filteredItems = filteredItems.filter(item => item.category_id === categoryId);
   }
   
   if (status) {
-    query = query.eq('status', status);
+    filteredItems = filteredItems.filter(item => item.status === status);
   }
   
   if (itemType) {
-    query = query.eq('item_type', itemType);
+    filteredItems = filteredItems.filter(item => item.item_type === itemType);
   }
   
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  
-  return data.map(item => {
-    const active_assignment = item.item_assignments?.find(a => !a.return_date);
-    return {
-      ...item,
-      category_name: item.categories?.name,
-      assigned_to: active_assignment?.profiles?.name
-    };
-  }) as Item[];
+  return mockAsync(filteredItems);
 };
 
 export const createItem = async (item: Partial<Item>) => {
-  const { data, error } = await supabase
-    .from('items')
-    .insert(item)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data as Item;
+  const newItem: Item = {
+    id: String(mockItems.length + 1),
+    name: item.name || 'Nytt objekt',
+    description: item.description,
+    category_id: item.category_id,
+    serial_number: item.serial_number,
+    status: item.status || 'available',
+    purchase_date: item.purchase_date,
+    last_checked: item.last_checked || new Date().toISOString().split('T')[0],
+    item_type: item.item_type || 'tool',
+    category_name: item.category_id 
+      ? mockCategories.find(c => c.id === item.category_id)?.name 
+      : undefined
+  };
+  
+  mockItems.push(newItem);
+  
+  return mockAsync(newItem);
 };
 
 export const updateItem = async (id: string, item: Partial<Item>) => {
-  const { data, error } = await supabase
-    .from('items')
-    .update(item)
-    .eq('id', id)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data as Item;
+  const index = mockItems.findIndex(i => i.id === id);
+  if (index === -1) throw new Error('Objekt hittades inte');
+  
+  const updatedItem = { ...mockItems[index], ...item };
+  
+  // Update category name if category changed
+  if (item.category_id && item.category_id !== mockItems[index].category_id) {
+    updatedItem.category_name = mockCategories.find(c => c.id === item.category_id)?.name;
+  }
+  
+  mockItems[index] = updatedItem as Item;
+  
+  return mockAsync(updatedItem as Item);
 };
 
 export const checkoutItem = async (itemId: string, userId: string) => {
-  const { data, error } = await supabase
-    .rpc('checkout_item', {
-      item_id: itemId,
-      user_id: userId
-    });
-    
-  if (error) throw error;
-  return data;
+  const item = mockItems.find(i => i.id === itemId);
+  const user = mockProfiles.find(p => p.id === userId);
+  
+  if (!item || !user) throw new Error('Objekt eller användare hittades inte');
+  
+  if (item.status === 'checked-out') {
+    return mockAsync({ success: false, message: 'Objektet är redan utcheckat' });
+  }
+  
+  // Update item status
+  const itemIndex = mockItems.findIndex(i => i.id === itemId);
+  mockItems[itemIndex] = { 
+    ...item, 
+    status: 'checked-out', 
+    assigned_to: user.name 
+  };
+  
+  // Create assignment
+  const newAssignment: ItemAssignment = {
+    id: String(mockItemAssignments.length + 1),
+    item_id: itemId,
+    user_id: userId,
+    assigned_date: new Date().toISOString().split('T')[0],
+    item_name: item.name,
+    user_name: user.name
+  };
+  
+  mockItemAssignments.push(newAssignment);
+  
+  // Create activity
+  const newActivity: Activity = {
+    id: String(mockActivities.length + 1),
+    title: 'Material utlånat',
+    description: `Material ${item.name} har lånats ut till ${user.name}`,
+    user_id: userId,
+    related_item_id: itemId,
+    priority: 'low',
+    timestamp: new Date().toISOString(),
+    date: 'idag',
+    user_name: user.name,
+    item_name: item.name
+  };
+  
+  mockActivities.push(newActivity);
+  
+  return mockAsync({ success: true, message: 'Objektet har checkats ut' });
 };
 
 export const checkinItem = async (itemId: string) => {
-  const { data, error } = await supabase
-    .rpc('checkin_item', {
-      item_id: itemId
-    });
-    
-  if (error) throw error;
-  return data;
+  const item = mockItems.find(i => i.id === itemId);
+  
+  if (!item) throw new Error('Objekt hittades inte');
+  
+  if (item.status !== 'checked-out') {
+    return mockAsync({ success: false, message: 'Inget utcheckat objekt hittades' });
+  }
+  
+  // Find active assignment
+  const assignmentIndex = mockItemAssignments.findIndex(
+    a => a.item_id === itemId && !a.return_date
+  );
+  
+  if (assignmentIndex === -1) {
+    return mockAsync({ success: false, message: 'Ingen aktiv utlåning hittades' });
+  }
+  
+  const assignment = mockItemAssignments[assignmentIndex];
+  
+  // Update assignment with return date
+  mockItemAssignments[assignmentIndex] = {
+    ...assignment,
+    return_date: new Date().toISOString().split('T')[0]
+  };
+  
+  // Update item status
+  const itemIndex = mockItems.findIndex(i => i.id === itemId);
+  mockItems[itemIndex] = { 
+    ...item, 
+    status: 'available', 
+    assigned_to: undefined 
+  };
+  
+  // Create activity
+  const newActivity: Activity = {
+    id: String(mockActivities.length + 1),
+    title: 'Material återlämnat',
+    description: `Material ${item.name} har lämnats tillbaka av ${assignment.user_name}`,
+    user_id: assignment.user_id,
+    related_item_id: itemId,
+    priority: 'low',
+    timestamp: new Date().toISOString(),
+    date: 'idag',
+    user_name: assignment.user_name,
+    item_name: item.name
+  };
+  
+  mockActivities.push(newActivity);
+  
+  return mockAsync({ success: true, message: 'Objektet har checkats in' });
 };
 
-// Utlåningar
+// Assignments
 export const getItemAssignments = async (userId?: string, returnedOnly = false) => {
-  let query = supabase
-    .from('item_assignments')
-    .select(`
-      *,
-      items(name, serial_number),
-      profiles(name)
-    `)
-    .order('assigned_date', { ascending: false });
-    
+  let filteredAssignments = [...mockItemAssignments];
+  
   if (userId) {
-    query = query.eq('user_id', userId);
+    filteredAssignments = filteredAssignments.filter(a => a.user_id === userId);
   }
   
   if (returnedOnly) {
-    query = query.not('return_date', 'is', null);
+    filteredAssignments = filteredAssignments.filter(a => a.return_date);
   } else {
-    query = query.is('return_date', null);
+    filteredAssignments = filteredAssignments.filter(a => !a.return_date);
   }
   
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  
-  return data.map(assignment => ({
-    ...assignment,
-    item_name: assignment.items?.name,
-    user_name: assignment.profiles?.name
-  })) as ItemAssignment[];
+  return mockAsync(filteredAssignments);
 };
 
-// Aktiviteter
+// Activities
 export const getActivities = async (limit = 10) => {
-  const { data, error } = await supabase
-    .from('activities')
-    .select(`
-      *,
-      profiles(name),
-      items(name)
-    `)
-    .order('timestamp', { ascending: false })
-    .limit(limit);
-    
-  if (error) throw error;
+  // Sort by timestamp, descending
+  const sortedActivities = [...mockActivities].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
   
-  return data.map(activity => {
-    // Formatera datum till "idag", "igår" eller datum
-    const activityDate = new Date(activity.timestamp);
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    let date = activityDate.toLocaleDateString('sv-SE');
-    if (activityDate.toDateString() === today.toDateString()) {
-      date = 'idag';
-    } else if (activityDate.toDateString() === yesterday.toDateString()) {
-      date = 'igår';
-    }
-    
-    return {
-      ...activity,
-      date,
-      user_name: activity.profiles?.name,
-      item_name: activity.items?.name
-    };
-  }) as Activity[];
+  return mockAsync(sortedActivities.slice(0, limit));
 };
 
-// Logga aktivitet manuellt
 export const logActivity = async (activity: Partial<Activity>) => {
-  const { data, error } = await supabase
-    .from('activities')
-    .insert(activity)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data as Activity;
+  const now = new Date();
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  let date = now.toLocaleDateString('sv-SE');
+  if (now.toDateString() === today.toDateString()) {
+    date = 'idag';
+  } else if (now.toDateString() === yesterday.toDateString()) {
+    date = 'igår';
+  }
+  
+  const newActivity: Activity = {
+    id: String(mockActivities.length + 1),
+    title: activity.title || 'Ny aktivitet',
+    description: activity.description,
+    user_id: activity.user_id,
+    related_item_id: activity.related_item_id,
+    priority: activity.priority || 'low',
+    timestamp: now.toISOString(),
+    date,
+    user_name: activity.user_id 
+      ? mockProfiles.find(p => p.id === activity.user_id)?.name 
+      : undefined,
+    item_name: activity.related_item_id 
+      ? mockItems.find(i => i.id === activity.related_item_id)?.name 
+      : undefined
+  };
+  
+  mockActivities.push(newActivity);
+  
+  return mockAsync(newActivity);
 };
