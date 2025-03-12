@@ -22,8 +22,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkSession = async () => {
       try {
         console.log("Checking initial session...");
-        
-        // Don't set loading to true here, as it triggers the spinner on initial page load
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
@@ -53,28 +51,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Listen for auth state changes
   useEffect(() => {
+    console.log("Setting up auth state change listener");
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event, !!session);
         
         if (session) {
           try {
-            // Only set loading to true for sign-in event
-            if (event === 'SIGNED_IN') {
-              setLoading(true);
-            }
-            
             const userData = await fetchUserProfile(session.user.id);
             setUser(userData);
-            
             if (event === 'SIGNED_IN') {
               navigate('/dashboard');
-              setLoading(false);
             }
           } catch (error) {
             console.error('Error in auth state change:', error);
             setUser(null);
-            setLoading(false);
             toast.error('Ett fel uppstod vid inloggning');
           }
         } else {
@@ -100,17 +91,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (!result.success) {
         toast.error(result.error || 'Inloggning misslyckades');
-        setLoading(false);
         return { success: false, error: result.error };
       }
       
-      // Auth state change handler will handle the user setting and navigation
       return { success: true };
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error.message || 'Ett oväntat fel uppstod');
-      setLoading(false);
       return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,7 +108,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setLoading(true);
       await signOutUser();
-      // Auth state change will handle the rest
     } catch (error: any) {
       console.error('Sign out error:', error);
       toast.error('Ett fel uppstod vid utloggning');
