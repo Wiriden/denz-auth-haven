@@ -13,7 +13,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -22,6 +22,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const checkSession = async () => {
       try {
         console.log("Checking initial session...");
+        setLoading(true);
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         if (session) {
           try {
-            // Set loading to true for sign-in events
+            // Only set loading to true for specific events
             if (event === 'SIGNED_IN') {
               setLoading(true);
             }

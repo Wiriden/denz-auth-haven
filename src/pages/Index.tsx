@@ -30,7 +30,7 @@ const Index = () => {
           <span className="ml-3 text-xl font-semibold text-denz-text-primary">Assetmaster</span>
         </div>
         
-        {/* Always show login form, loading state is handled inside the form */}
+        {/* Show loading state in the form itself */}
         <LoginForm />
         
         <AuthFooter />

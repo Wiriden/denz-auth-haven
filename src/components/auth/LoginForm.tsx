@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { EmailIcon, EyeIcon, EyeOffIcon, LockIcon } from "../icons/AuthIcons";
 
@@ -13,6 +13,13 @@ const LoginForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signIn, loading } = useAuth();
 
+  // Reset isSubmitting when global loading state changes
+  useEffect(() => {
+    if (!loading) {
+      setIsSubmitting(false);
+    }
+  }, [loading]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -21,7 +28,7 @@ const LoginForm: React.FC = () => {
       return;
     }
     
-    if (isSubmitting || loading) return;
+    if (isSubmitting) return;
     
     setIsSubmitting(true);
     
@@ -32,9 +39,6 @@ const LoginForm: React.FC = () => {
         toast.error(result.error || "Inloggning misslyckades");
         setIsSubmitting(false);
       }
-      // We don't reset isSubmitting on success because either:
-      // 1. The component will unmount as we navigate
-      // 2. An error occurred and we've already reset isSubmitting
     } catch (error: any) {
       console.error('LoginForm error:', error);
       toast.error(error.message || "Ett oväntat fel uppstod");
@@ -45,6 +49,9 @@ const LoginForm: React.FC = () => {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  // Determine if button should show loading state
+  const buttonIsLoading = isSubmitting || loading;
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -64,7 +71,7 @@ const LoginForm: React.FC = () => {
               className="pl-10 h-10 bg-white border-gray-200 rounded-md focus:border-denz-blue focus:ring-1 focus:ring-denz-blue/20 w-full"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitting || loading}
+              disabled={buttonIsLoading}
               required
             />
           </div>
@@ -88,7 +95,7 @@ const LoginForm: React.FC = () => {
               className="pl-10 pr-10 h-10 bg-white border-gray-200 rounded-md focus:border-denz-blue focus:ring-1 focus:ring-denz-blue/20 w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              disabled={isSubmitting || loading}
+              disabled={buttonIsLoading}
               required
             />
             <button
@@ -96,7 +103,7 @@ const LoginForm: React.FC = () => {
               onClick={toggleShowPassword}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-denz-text-secondary hover:text-denz-text-primary focus:outline-none"
               aria-label={showPassword ? "Dölj lösenord" : "Visa lösenord"}
-              disabled={isSubmitting || loading}
+              disabled={buttonIsLoading}
             >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </button>
@@ -106,9 +113,9 @@ const LoginForm: React.FC = () => {
         <Button 
           type="submit" 
           className="w-full h-10 bg-denz-blue hover:bg-denz-dark-blue text-white transition-colors duration-200 rounded-md mt-2"
-          disabled={isSubmitting || loading}
+          disabled={buttonIsLoading}
         >
-          {(isSubmitting || loading) ? (
+          {buttonIsLoading ? (
             <div className="flex items-center justify-center">
               <div className="h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
               Loggar in...
