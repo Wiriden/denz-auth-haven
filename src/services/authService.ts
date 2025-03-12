@@ -12,29 +12,47 @@ export const fetchUserProfile = async (userId: string): Promise<Profile> => {
       
     if (error) {
       console.error("Error fetching user profile:", error);
-      return { id: userId, name: 'User', role: 'user', status: 'active' } as Profile;
+      // Return a fallback profile if we can't fetch from the database
+      return { 
+        id: userId, 
+        name: 'Användare', 
+        role: 'user', 
+        status: 'active' 
+      } as Profile;
     }
     
     if (!data) {
       console.error("No profile found for user ID:", userId);
-      return { id: userId, name: 'User', role: 'user', status: 'active' } as Profile;
+      return { 
+        id: userId, 
+        name: 'Användare', 
+        role: 'user', 
+        status: 'active' 
+      } as Profile;
     }
     
     return data as Profile;
   } catch (error) {
     console.error("Exception in fetchUserProfile:", error);
-    return { id: userId, name: 'User', role: 'user', status: 'active' } as Profile;
+    return { 
+      id: userId, 
+      name: 'Användare', 
+      role: 'user', 
+      status: 'active' 
+    } as Profile;
   }
 };
 
 export const signInWithEmailPassword = async (email: string, password: string) => {
   try {
+    console.log("Attempting to sign in with:", email);
     const { data, error } = await supabase.auth.signInWithPassword({ 
       email, 
       password 
     });
 
     if (error) {
+      console.error("Sign-in error:", error.message);
       return { 
         success: false, 
         error: error.message === 'Invalid login credentials' 
@@ -54,29 +72,16 @@ export const signInWithEmailPassword = async (email: string, password: string) =
       };
     }
 
-    try {
-      const userProfile = await fetchUserProfile(data.session.user.id);
-      return { 
-        success: true, 
-        session: data.session,
-        user: userProfile
-      };
-    } catch (error) {
-      console.error("Error fetching user profile after sign in:", error);
-      const minimalUser = { 
-        id: data.session.user.id, 
-        name: 'User', 
-        role: 'user', 
-        status: 'active' 
-      } as Profile;
-      
-      return { 
-        success: true, 
-        session: data.session,
-        user: minimalUser
-      };
-    }
+    console.log("Sign-in successful, fetching user profile");
+    
+    // Return success here to allow AuthProvider to handle the profile fetching
+    return { 
+      success: true, 
+      session: data.session,
+      user: null
+    };
   } catch (error: any) {
+    console.error("Unexpected error during sign-in:", error);
     return { 
       success: false, 
       error: error.message || "Ett oväntat fel uppstod", 

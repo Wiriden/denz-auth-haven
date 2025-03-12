@@ -22,7 +22,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("Auth state changed:", event, !!session);
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Auth state changed:", event, !!session);
+        }
         
         if (!mounted) return;
 
@@ -40,7 +42,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               setUser(userData);
               
               if (event === 'SIGNED_IN') {
-                console.log("User signed in, navigating to dashboard");
                 navigate('/dashboard');
               }
             }
@@ -48,7 +49,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (mounted) {
               setUser(null);
               if (event === 'SIGNED_OUT') {
-                console.log("User signed out, navigating to login");
                 navigate('/');
               }
             }
@@ -98,6 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (!result.success) {
         toast.error(result.error || 'Inloggning misslyckades');
+        setLoading(false);
         return { success: false, error: result.error };
       }
 
@@ -106,10 +107,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error.message || 'Ett oväntat fel uppstod');
-      return { success: false, error: error.message };
-    } finally {
-      // Only reset loading if sign in failed - successful sign in will be handled by auth state change
       setLoading(false);
+      return { success: false, error: error.message };
     }
   };
 

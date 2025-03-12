@@ -1,6 +1,14 @@
 
-import useAuth, { AuthProvider } from '@/context/AuthContext';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
 
-export { AuthProvider };
-export { useAuth };
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export { AuthProvider } from '@/context/AuthProvider';
 export default useAuth;

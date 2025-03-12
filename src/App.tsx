@@ -1,8 +1,9 @@
+
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/hooks/useAuth.tsx";
+import { AuthProvider } from "@/context/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
@@ -26,11 +27,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             
             {/* Dashboard routes med layout */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
+            <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Oversikt />} />
               <Route path="oversikt" element={<Oversikt />} />
               <Route path="anstallda" element={<Anstallda />} />
