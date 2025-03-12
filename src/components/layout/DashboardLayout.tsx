@@ -10,8 +10,10 @@ const DashboardLayout = () => {
   const { user, loading } = useAuth();
   
   useEffect(() => {
-    // Debug loading state
-    console.log("DashboardLayout loading state:", loading, "user:", !!user);
+    // Only log in development mode to reduce console noise
+    if (process.env.NODE_ENV === 'development') {
+      console.log("DashboardLayout loading state:", loading, "user:", !!user);
+    }
   }, [loading, user]);
   
   // Show loading indicator for max 3 seconds to prevent infinite loading

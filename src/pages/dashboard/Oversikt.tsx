@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,8 +13,9 @@ import {
     Shield,
     Users
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 
+// Separate loader components to improve readability
 const SkeletonCard = () => (
   <div className="space-y-3">
     <Skeleton className="h-6 w-1/3" />
@@ -24,52 +26,45 @@ const SkeletonCard = () => (
 
 const Oversikt: React.FC = () => {
   const { user, loading: userLoading } = useUser();
+  const userId = user?.id;
 
-  // Hämta data med React Query
+  // Optimize data fetching by using staleTime and proper enabled flags
   const { data: activities, isLoading: activitiesLoading } = useQuery({
     queryKey: ['activities'],
-    queryFn: () => getActivities(5)
+    queryFn: () => getActivities(5),
+    staleTime: 60000, // 1 minute
+    enabled: !userLoading // Only run when we know user state
   });
 
   const { data: certificates, isLoading: certificatesLoading } = useQuery({
-    queryKey: ['certificates'],
-    queryFn: () => getUserCertificates(user?.id)
+    queryKey: ['certificates', userId],
+    queryFn: () => getUserCertificates(userId),
+    staleTime: 60000, // 1 minute
+    enabled: !!userId // Only run when we have a userId
   });
 
   const { data: toolItems, isLoading: toolsLoading } = useQuery({
     queryKey: ['tools'],
     queryFn: () => getItems(undefined, undefined, 'tool'),
-    enabled: !userLoading // Kör endast när user är laddad
+    staleTime: 60000, // 1 minute
+    enabled: !userLoading && !!userId // Only run when user data is loaded
   });
 
   const { data: safetyItems, isLoading: safetyLoading } = useQuery({
     queryKey: ['safety'],
     queryFn: () => getItems(undefined, undefined, 'safety'),
-    enabled: !userLoading // Kör endast när user är laddad
+    staleTime: 60000, // 1 minute
+    enabled: !userLoading && !!userId // Only run when user data is loaded
   });
 
   const { data: activeAssignments, isLoading: assignmentsLoading } = useQuery({
-    queryKey: ['assignments'],
-    queryFn: () => getItemAssignments(user?.id),
-    enabled: !userLoading && !!user?.id // Kör endast när user är laddad och har ett ID
+    queryKey: ['assignments', userId],
+    queryFn: () => getItemAssignments(userId),
+    staleTime: 60000, // 1 minute
+    enabled: !!userId // Only run when we have a userId
   });
 
-  // Lägg till lite loggning för debugging
-  useEffect(() => {
-    console.log("Översikt renderad, user:", user?.name, "userLoading:", userLoading);
-    console.log("Data loading status:", {
-      activities: activitiesLoading,
-      certificates: certificatesLoading,
-      tools: toolsLoading,
-      safety: safetyLoading,
-      assignments: assignmentsLoading
-    });
-  }, [
-    user, userLoading, 
-    activitiesLoading, certificatesLoading, 
-    toolsLoading, safetyLoading, assignmentsLoading
-  ]);
-
+  // Precalculate derived values only when the data is available
   // Beräkna certifikatdata
   const certificatesCount = certificates?.length || 0;
   const expiringCertificates = certificates?.filter(cert => cert.days_left && cert.days_left < 60) || [];
